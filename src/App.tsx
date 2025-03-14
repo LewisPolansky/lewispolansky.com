@@ -1,30 +1,16 @@
-import { useEffect, useRef } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
-import { AsciiScene } from './components/AsciiScene'
+import { Profile } from './pages/Profile'
+import { Animator } from './pages/Animator'
 
 function App() {
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!containerRef.current) return
-
-    const scene = new AsciiScene(containerRef.current)
-    scene.animate()
-
-    return () => {
-      scene.dispose()
-    }
-  }, [])
-
   return (
-    <div 
-      ref={containerRef} 
-      style={{ 
-        width: '100vw', 
-        height: '100vh', 
-        overflow: 'hidden' 
-      }}
-    />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Profile />} />
+        <Route path="/animator" element={<Animator />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

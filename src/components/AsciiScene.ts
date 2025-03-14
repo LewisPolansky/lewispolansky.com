@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { AsciiEffect } from 'three/examples/jsm/effects/AsciiEffect.js'
+import keyframesData from '../data/keyframes.json'
 
 export class AsciiScene {
   private camera!: THREE.PerspectiveCamera
@@ -13,48 +14,25 @@ export class AsciiScene {
   private clock: THREE.Clock
   private helpers: THREE.Object3D[] = []
   private loadingManager: THREE.LoadingManager
-
+  private showHelpers: boolean = false
+  private doneScrolling = false
+  private onDoneScrolling?: () => void
   // Animation properties
-  private keyframes = [
-    {
-      position: { x: -22.502926463825847, y: 559.8196354659766, z: 571.0478036445851 },
-      rotation: { x: -0.7754696794304033, y: -0.028132368733840715, z: -0.027796148008862744 },
-      fov: 49,
-      lookAt: { x: 0, y: 0, z: 0 }
-    },
-    {
-      position: { x: 491.81518626554987, y: 274.71173839560987, z: 419.8142121686556 },
-      rotation: { x: -0.5794376632330722, y: 0.7754415895918768, z: 0.4335069598295116 },
-      fov: 49,
-      lookAt: { x: 0, y: 0, z: 0 }
-    },
-    {
-      position: { x: 36.363043101404585, y: 142.28603776814964, z: -444.76606221074695 },
-      rotation: { x: -2.831969460895319, y: 0.07771315520491995, z: 3.0918565354668015 },
-      fov: 49,
-      lookAt: { x: 0, y: 0, z: 0 }
-    },
-    {
-      position: { x: -191.20321964955951, y: 15.94545341775256, z: 322.0828817025111 },
-      rotation: { x: -0.049466911025698945, y: -0.5351972396625484, z: -0.025243888847787093 },
-      fov: 49,
-      lookAt: { x: 0, y: 0, z: 0 }
-    },
-    {
-      position: { x: 0.6708073950390417, y: -12.427571956351276, z: 326.1363537093675 },
-      rotation: { x: 0.03808702096799697, y: 0.0020553365444296308, z: 0.0024860296439987934 },
-      fov: 49,
-      lookAt: { x: 0, y: 0, z: 0 }
-    }
-  ]
+  private keyframes = keyframesData.keyframes
 
   private scrollProgress = 0
   private targetScrollProgress = 0
-  private scrollSpeed = 0.1 // Adjust this value to control animation smoothness
+  private scrollSpeed = 0.07 // Adjust this value to control animation smoothness
   private scrollMultiplier = 0.001 // Adjust this to control scroll sensitivity
 
-  constructor(container: HTMLElement) {
+  // Add these new properties
+  private mousePosition = new THREE.Vector2(0, 0)
+  private readonly MAX_ROTATION = THREE.MathUtils.degToRad(20) // 20 degrees in radians
+  private baseRotation = new THREE.Vector3()
+
+  constructor(container: HTMLElement, options?: { onDoneScrolling?: () => void }) {
     this.container = container
+    this.onDoneScrolling = options?.onDoneScrolling
     this.clock = new THREE.Clock()
     
     // Create loading manager
@@ -68,8 +46,9 @@ export class AsciiScene {
     }
 
     this.init()
-    this.addFrameControls()
+    // this.addFrameControls() // Comment out frame controls UI
     this.setupScrollHandler()
+    this.setupMouseHandler() // Add this line after this.setupScrollHandler()
   }
 
   private init(): void {
@@ -115,6 +94,9 @@ export class AsciiScene {
     this.helpers.push(pointLightHelper2)
     this.scene.add(pointLightHelper2)
 
+    // Set initial visibility for all helpers after they're all added
+    this.toggleHelpers(this.showHelpers)
+
     // Renderer setup
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -134,10 +116,14 @@ export class AsciiScene {
     this.effect.setSize(window.innerWidth, window.innerHeight)
     this.effect.domElement.style.color = 'white'
     this.effect.domElement.style.backgroundColor = 'black'
+    // Make ASCII text non-selectable
+    this.effect.domElement.style.userSelect = 'none'
+    this.effect.domElement.style.webkitUserSelect = 'none'
 
     // Add to DOM
     this.container.appendChild(this.effect.domElement)
 
+    /* Debug UI elements
     // Add helpers toggle checkbox
     const toggleContainer = document.createElement('div')
     toggleContainer.style.position = 'fixed'
@@ -152,7 +138,7 @@ export class AsciiScene {
 
     const checkbox = document.createElement('input')
     checkbox.type = 'checkbox'
-    checkbox.checked = true
+    checkbox.checked = this.showHelpers
     checkbox.id = 'helpers-toggle'
     
     const label = document.createElement('label')
@@ -176,9 +162,20 @@ export class AsciiScene {
 
     checkbox.addEventListener('change', () => this.toggleHelpers(checkbox.checked))
     cameraButton.addEventListener('click', () => this.logCameraState())
+    */
 
     // Event listeners
     window.addEventListener('resize', this.handleResize)
+    
+    // Add keyboard controls
+    window.addEventListener('keydown', (event) => {
+      if (event.code === 'Space') {
+        // Prevent default space bar behavior (page scroll)
+        event.preventDefault()
+        // Use same logic as next button to advance frame
+        this.targetScrollProgress = Math.min(this.keyframes.length - 1, Math.ceil(this.scrollProgress) + 1)
+      }
+    })
 
     // Load model
     this.loadModel()
@@ -213,6 +210,9 @@ export class AsciiScene {
         (gltf) => {
           try {
             this.model = gltf.scene
+            
+            // Store the initial rotation after centering
+            this.baseRotation.copy(this.model.rotation)
             
             // Center and scale the model
             const box = new THREE.Box3().setFromObject(this.model)
@@ -256,6 +256,21 @@ export class AsciiScene {
   private render(): void {
     if (!this.effect || !this.scene || !this.camera) return
     this.updateCameraPosition()
+    
+    // Add this new section to update model rotation
+    if (this.model) {
+      // Calculate rotation based on mouse position
+      const targetRotationY = this.baseRotation.y + (this.mousePosition.x * this.MAX_ROTATION)
+      const targetRotationX = this.baseRotation.x + (this.mousePosition.y * this.MAX_ROTATION)
+      
+      // Smoothly interpolate current rotation to target rotation
+      this.model.rotation.y = this.lerp(this.model.rotation.y, targetRotationY, 0.3)
+      this.model.rotation.x = this.lerp(this.model.rotation.x, targetRotationX, 0.3)
+    }
+    
+    // Make camera always look at origin
+    this.camera.lookAt(0, 0, 0)
+    
     this.effect.render(this.scene, this.camera)
   }
 
@@ -287,9 +302,11 @@ export class AsciiScene {
     }
     
     this.renderer.dispose()
+    window.removeEventListener('mousemove', this.setupMouseHandler)
   }
 
   private toggleHelpers(show: boolean): void {
+    this.showHelpers = show
     this.helpers.forEach(helper => {
       helper.visible = show
     })
@@ -316,6 +333,7 @@ export class AsciiScene {
     console.log(JSON.stringify(cameraState))
   }
 
+  /* Frame Controls UI - Commented out for production
   private addFrameControls(): void {
     const animContainer = document.createElement('div')
     animContainer.style.position = 'fixed'
@@ -374,19 +392,112 @@ export class AsciiScene {
     animContainer.appendChild(navContainer)
     this.container.appendChild(animContainer)
   }
+  */
 
-  private updateCameraToFrame(frameIndex: number): void {
-    this.targetScrollProgress = frameIndex
+  private updateCameraPosition(): void {
+    // Smoothly update current scroll progress
+    this.scrollProgress = this.lerp(
+      this.scrollProgress,
+      this.targetScrollProgress,
+      this.scrollSpeed
+    )
+
+    // Get the current frame index and progress to next frame
+    const currentFrameIndex = Math.floor(this.scrollProgress)
+    const nextFrameIndex = Math.min(currentFrameIndex + 1, this.keyframes.length - 1)
+    const frameLerpFactor = this.scrollProgress - currentFrameIndex
+
+    const currentFrame = this.keyframes[currentFrameIndex]
+    const nextFrame = this.keyframes[nextFrameIndex]
+
+    // Convert positions to spherical coordinates
+    const currentSpherical = this.cartesianToSpherical(currentFrame.position)
+    const nextSpherical = this.cartesianToSpherical(nextFrame.position)
+
+    // Handle the case where phi wraps around
+    let nextPhi = nextSpherical.phi
+    const twoPi = 2 * Math.PI
+    
+    // Ensure we take the shortest path around the circle
+    if (Math.abs(nextPhi - currentSpherical.phi) > Math.PI) {
+      if (nextPhi > currentSpherical.phi) {
+        nextPhi -= twoPi
+      } else {
+        nextPhi += twoPi
+      }
+    }
+
+    // Lerp spherical coordinates
+    const lerpedR = this.lerp(currentSpherical.r, nextSpherical.r, frameLerpFactor)
+    const lerpedTheta = this.lerp(currentSpherical.theta, nextSpherical.theta, frameLerpFactor)
+    const lerpedPhi = this.lerp(currentSpherical.phi, nextPhi, frameLerpFactor)
+
+    // Convert back to Cartesian coordinates
+    const position = this.sphericalToCartesian(lerpedR, lerpedTheta, lerpedPhi)
+
+    // Interpolate rotation
+    const rotation = this.lerpRotation(
+      currentFrame.rotation,
+      nextFrame.rotation,
+      frameLerpFactor
+    )
+
+    // Interpolate FOV
+    const fov = this.lerp(currentFrame.fov, nextFrame.fov, frameLerpFactor)
+
+    // Apply interpolated values
+    this.camera.position.copy(position)
+    this.camera.rotation.set(rotation.x, rotation.y, rotation.z)
+    this.camera.fov = fov
+    this.camera.updateProjectionMatrix()
+
+    // Update progress bar
+    this.updateProgressBar()
   }
 
   private setupScrollHandler(): void {
+    let hasReachedEnd = false
     window.addEventListener('wheel', (event) => {
+      if (hasReachedEnd) return // Ignore scroll input if we've reached the end
+
       // Update target scroll progress based on scroll direction
-      this.targetScrollProgress = Math.max(0, Math.min(
+      const newProgress = Math.max(0, Math.min(
         this.keyframes.length - 1,
         this.targetScrollProgress + event.deltaY * this.scrollMultiplier
       ))
+
+      // Check if we've hit 90% threshold
+      const maxProgress = this.keyframes.length - 1
+      const threshold = maxProgress * 0.9
+
+      if (newProgress >= threshold && !hasReachedEnd) {
+        hasReachedEnd = true
+        this.targetScrollProgress = maxProgress // Set to 100%
+      } else if (!hasReachedEnd) {
+        this.targetScrollProgress = newProgress
+      }
     }, { passive: true })
+  }
+
+  private updateProgressBar(): void {
+    const progressElement = document.getElementById('ascii-progress')
+    if (!progressElement) return
+
+    const totalWidth = 20
+    const progress = this.scrollProgress / (this.keyframes.length - 1)
+    const filledCount = Math.round(progress * totalWidth)
+    const emptyCount = totalWidth - filledCount
+    
+    const filled = '#'.repeat(filledCount)
+    const empty = '-'.repeat(emptyCount)
+    
+    const percentage = Math.round(progress * 100)
+    const percentageStr = percentage.toString().padStart(3, ' ')
+    progressElement.textContent = `Scroll: [${percentageStr}%] [${filled}${empty}]`
+
+    if (percentage === 100 && !this.doneScrolling) {
+      this.handleDoneScrolling()
+    }
   }
 
   private lerp(start: number, end: number, t: number): number {
@@ -433,49 +544,33 @@ export class AsciiScene {
     return this.lerp(start, end, t)
   }
 
-  private updateCameraPosition(): void {
-    // Smoothly update current scroll progress
-    this.scrollProgress = this.lerp(
-      this.scrollProgress,
-      this.targetScrollProgress,
-      this.scrollSpeed
+  private cartesianToSpherical(pos: THREE.Vector3Like): { r: number, theta: number, phi: number } {
+    const r = Math.sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z)
+    const theta = Math.acos(pos.y / r) // polar angle (θ) from y-axis
+    const phi = Math.atan2(pos.z, pos.x) // azimuthal angle (φ) in x-z plane
+    return { r, theta, phi }
+  }
+
+  private sphericalToCartesian(r: number, theta: number, phi: number): THREE.Vector3 {
+    return new THREE.Vector3(
+      r * Math.sin(theta) * Math.cos(phi),
+      r * Math.cos(theta),
+      r * Math.sin(theta) * Math.sin(phi)
     )
+  }
 
-    // Get the current frame index and progress to next frame
-    const currentFrameIndex = Math.floor(this.scrollProgress)
-    const nextFrameIndex = Math.min(currentFrameIndex + 1, this.keyframes.length - 1)
-    const frameLerpFactor = this.scrollProgress - currentFrameIndex
+  // Add this new method
+  private setupMouseHandler(): void {
+    window.addEventListener('mousemove', (event) => {
+      // Convert mouse position to normalized coordinates (-1 to 1)
+      this.mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1
+      this.mousePosition.y = (event.clientY / window.innerHeight) * 2 - 1
+    })
+  }
 
-    const currentFrame = this.keyframes[currentFrameIndex]
-    const nextFrame = this.keyframes[nextFrameIndex]
-
-    // Interpolate position
-    const position = this.lerpVector3(
-      currentFrame.position,
-      nextFrame.position,
-      frameLerpFactor
-    )
-
-    // Interpolate rotation
-    const rotation = this.lerpRotation(
-      currentFrame.rotation,
-      nextFrame.rotation,
-      frameLerpFactor
-    )
-
-    // Interpolate FOV
-    const fov = this.lerp(currentFrame.fov, nextFrame.fov, frameLerpFactor)
-
-    // Apply interpolated values
-    this.camera.position.copy(position)
-    this.camera.rotation.set(rotation.x, rotation.y, rotation.z)
-    this.camera.fov = fov
-    this.camera.updateProjectionMatrix()
-
-    // Update frame display if it exists
-    const frameDisplay = this.container.querySelector('span')
-    if (frameDisplay) {
-      frameDisplay.textContent = `Frame: ${this.scrollProgress.toFixed(2)}/${this.keyframes.length - 1}`
-    }
+  private handleDoneScrolling(): void {
+    if (this.doneScrolling) return // Prevent multiple calls
+    this.doneScrolling = true
+    this.onDoneScrolling?.()
   }
 } 

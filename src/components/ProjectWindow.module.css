@@ -1,0 +1,141 @@
+.window {
+  position: fixed;
+  background-color: #c0c0c0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 200px;
+  min-height: 100px;
+  border-top: 1px solid #dfdfdf;
+  border-left: 1px solid #dfdfdf;
+  border-right: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  box-shadow: none;
+}
+
+.titleBar {
+  background-color: #000080;
+  padding: 2px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  user-select: none;
+  height: 18px;
+}
+
+.titleText {
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffffff;
+  font-family: monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.windowControls {
+  display: flex;
+  gap: 2px;
+}
+
+.controlButton {
+  width: 16px;
+  height: 14px;
+  border: 1px solid #ffffff;
+  background: #c0c0c0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  font-size: 12px;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  padding: 0;
+  margin-left: 2px;
+  box-shadow: inset -1px -1px #0a0a0a,inset 1px 1px #ffffff;
+}
+
+.controlButton:active {
+  box-shadow: inset 1px 1px #0a0a0a,inset -1px -1px #ffffff;
+}
+
+.menuBar {
+  background-color: #c0c0c0;
+  padding: 1px 2px;
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #808080;
+}
+
+.menuItem {
+  font-size: 12px;
+  font-family: 'MS Sans Serif', 'Fixedsys', monospace;
+  color: #000000;
+  padding: 2px 6px;
+  cursor: default;
+  letter-spacing: -0.3px;
+}
+
+.menuItem:hover {
+  background-color: #000080;
+  color: #ffffff;
+}
+
+.windowContent {
+  flex: 1;
+  overflow: auto;
+  padding: 2px;
+  background-color: #d0d0d0;
+  border: inset 1px #808080;
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
+
+  padding: 2px 6px;
+}
+
+.windowContent button {
+  background-color: #0000a0;
+  font-family: monospace;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  margin-top: 5px;
+  border-radius: 2px;
+  padding: 2px 6px;
+}
+
+.resizeHandle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  cursor: se-resize;
+  background: #c0c0c0;
+}
+
+.maximized {
+  border: 2px solid #000000 !important;
+}
+
+.minimized {
+  height: 18px !important;
+  overflow: hidden;
+}
+
+.minimized .windowContent {
+  display: none;
+}
+
+/* Add smooth transitions for window transformations */
+.window {
+  transition: width 0.2s ease-out, height 0.2s ease-out;
+}
+
+/* Ensure content doesn't overflow during resize */
+.windowContent > * {
+  max-width: 100%;
+  max-height: 100%;
+} 
