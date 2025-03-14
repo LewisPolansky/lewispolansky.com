@@ -49,12 +49,12 @@ export class AsciiScene {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
     this.scene.add(ambientLight)
 
-    const pointLight1 = new THREE.PointLight(0xffffff, 1)
-    pointLight1.position.set(100, 100, 400)
+    const pointLight1 = new THREE.PointLight(0xffffff, 1, 0, 0)
+    pointLight1.position.set(100, 100, 0)
     this.scene.add(pointLight1)
 
-    const pointLight2 = new THREE.PointLight(0xffffff, 0.5)
-    pointLight2.position.set(-500, 100, -400)
+    const pointLight2 = new THREE.PointLight(0xffffff, 12, 0, 0)
+    pointLight2.position.set(-500, 100, -200)
     this.scene.add(pointLight2)
 
     // Add light helpers
@@ -65,17 +65,6 @@ export class AsciiScene {
     const pointLightHelper2 = new THREE.PointLightHelper(pointLight2, 10)
     this.helpers.push(pointLightHelper2)
     this.scene.add(pointLightHelper2)
-
-    // Add directional light
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1)
-    directionalLight.position.set(-250, -50, -100)
-    directionalLight.target.position.set(0, 0, 0)
-    this.scene.add(directionalLight)
-
-    // Add directional light helper
-    const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 50)
-    this.helpers.push(directionalLightHelper)
-    this.scene.add(directionalLightHelper)
 
     // Renderer setup
     this.renderer = new THREE.WebGLRenderer({
@@ -99,6 +88,92 @@ export class AsciiScene {
 
     // Add to DOM
     this.container.appendChild(this.effect.domElement)
+
+    // Add helpers toggle checkbox
+    const toggleContainer = document.createElement('div')
+    toggleContainer.style.position = 'fixed'
+    toggleContainer.style.top = '20px'
+    toggleContainer.style.right = '20px'
+    toggleContainer.style.zIndex = '1000'
+    toggleContainer.style.color = 'white'
+    toggleContainer.style.display = 'flex'
+    toggleContainer.style.alignItems = 'center'
+    toggleContainer.style.gap = '8px'
+    toggleContainer.style.flexWrap = 'wrap'
+
+    const checkbox = document.createElement('input')
+    checkbox.type = 'checkbox'
+    checkbox.checked = true
+    checkbox.id = 'helpers-toggle'
+    
+    const label = document.createElement('label')
+    label.htmlFor = 'helpers-toggle'
+    label.textContent = 'Show Helpers'
+
+    const cameraButton = document.createElement('button')
+    cameraButton.textContent = 'Log Camera State'
+    cameraButton.style.marginLeft = '20px'
+    cameraButton.style.padding = '5px 10px'
+    cameraButton.style.backgroundColor = '#333'
+    cameraButton.style.color = 'white'
+    cameraButton.style.border = '1px solid #666'
+    cameraButton.style.borderRadius = '4px'
+    cameraButton.style.cursor = 'pointer'
+
+    // Add FOV controls
+    const fovContainer = document.createElement('div')
+    fovContainer.style.display = 'flex'
+    fovContainer.style.alignItems = 'center'
+    fovContainer.style.gap = '8px'
+    fovContainer.style.marginLeft = '20px'
+
+    const fovLabel = document.createElement('label')
+    fovLabel.textContent = 'FOV:'
+    fovLabel.style.marginRight = '8px'
+
+    const fovSlider = document.createElement('input')
+    fovSlider.type = 'range'
+    fovSlider.min = '30'
+    fovSlider.max = '120'
+    fovSlider.value = '45'
+    fovSlider.style.width = '100px'
+
+    const fovNumber = document.createElement('input')
+    fovNumber.type = 'number'
+    fovNumber.min = '30'
+    fovNumber.max = '120'
+    fovNumber.value = '45'
+    fovNumber.style.width = '60px'
+    fovNumber.style.backgroundColor = '#333'
+    fovNumber.style.color = 'white'
+    fovNumber.style.border = '1px solid #666'
+    fovNumber.style.borderRadius = '4px'
+    fovNumber.style.padding = '2px 5px'
+
+    // FOV change handler
+    const updateFOV = (value: number) => {
+      const fov = Math.min(Math.max(value, 30), 120)
+      this.camera.fov = fov
+      this.camera.updateProjectionMatrix()
+      fovSlider.value = fov.toString()
+      fovNumber.value = fov.toString()
+    }
+
+    fovSlider.addEventListener('input', (e) => updateFOV(Number((e.target as HTMLInputElement).value)))
+    fovNumber.addEventListener('input', (e) => updateFOV(Number((e.target as HTMLInputElement).value)))
+
+    fovContainer.appendChild(fovLabel)
+    fovContainer.appendChild(fovSlider)
+    fovContainer.appendChild(fovNumber)
+
+    toggleContainer.appendChild(checkbox)
+    toggleContainer.appendChild(label)
+    toggleContainer.appendChild(cameraButton)
+    toggleContainer.appendChild(fovContainer)
+    this.container.appendChild(toggleContainer)
+
+    checkbox.addEventListener('change', () => this.toggleHelpers(checkbox.checked))
+    cameraButton.addEventListener('click', () => this.logCameraState())
 
     // Controls
     this.controls = new TrackballControls(this.camera, this.effect.domElement)
@@ -220,5 +295,32 @@ export class AsciiScene {
     }
     
     this.renderer.dispose()
+  }
+
+  private toggleHelpers(show: boolean): void {
+    this.helpers.forEach(helper => {
+      helper.visible = show
+    })
+  }
+
+  private logCameraState(): void {
+    const cameraState = {
+      position: {
+        x: this.camera.position.x,
+        y: this.camera.position.y,
+        z: this.camera.position.z
+      },
+      rotation: {
+        x: this.camera.rotation.x,
+        y: this.camera.rotation.y,
+        z: this.camera.rotation.z
+      },
+      fov: this.camera.fov,
+      lookAt: { x: 0, y: 0, z: 0 }
+    }
+    
+    console.log('Camera State:', cameraState)
+    // Also log as a compact string for easy copying
+    console.log(JSON.stringify(cameraState))
   }
 } 
