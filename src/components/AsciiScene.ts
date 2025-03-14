@@ -2,19 +2,56 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { AsciiEffect } from 'three/examples/jsm/effects/AsciiEffect.js'
-import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js'
 
 export class AsciiScene {
   private camera!: THREE.PerspectiveCamera
   private scene!: THREE.Scene
   private renderer!: THREE.WebGLRenderer
   private effect!: AsciiEffect
-  private controls!: TrackballControls
   private container: HTMLElement
   private model: THREE.Object3D | null = null
   private clock: THREE.Clock
   private helpers: THREE.Object3D[] = []
   private loadingManager: THREE.LoadingManager
+
+  // Animation properties
+  private keyframes = [
+    {
+      position: { x: -22.502926463825847, y: 559.8196354659766, z: 571.0478036445851 },
+      rotation: { x: -0.7754696794304033, y: -0.028132368733840715, z: -0.027796148008862744 },
+      fov: 49,
+      lookAt: { x: 0, y: 0, z: 0 }
+    },
+    {
+      position: { x: 491.81518626554987, y: 274.71173839560987, z: 419.8142121686556 },
+      rotation: { x: -0.5794376632330722, y: 0.7754415895918768, z: 0.4335069598295116 },
+      fov: 49,
+      lookAt: { x: 0, y: 0, z: 0 }
+    },
+    {
+      position: { x: 36.363043101404585, y: 142.28603776814964, z: -444.76606221074695 },
+      rotation: { x: -2.831969460895319, y: 0.07771315520491995, z: 3.0918565354668015 },
+      fov: 49,
+      lookAt: { x: 0, y: 0, z: 0 }
+    },
+    {
+      position: { x: -191.20321964955951, y: 15.94545341775256, z: 322.0828817025111 },
+      rotation: { x: -0.049466911025698945, y: -0.5351972396625484, z: -0.025243888847787093 },
+      fov: 49,
+      lookAt: { x: 0, y: 0, z: 0 }
+    },
+    {
+      position: { x: 0.6708073950390417, y: -12.427571956351276, z: 326.1363537093675 },
+      rotation: { x: 0.03808702096799697, y: 0.0020553365444296308, z: 0.0024860296439987934 },
+      fov: 49,
+      lookAt: { x: 0, y: 0, z: 0 }
+    }
+  ]
+
+  private scrollProgress = 0
+  private targetScrollProgress = 0
+  private scrollSpeed = 0.1 // Adjust this value to control animation smoothness
+  private scrollMultiplier = 0.001 // Adjust this to control scroll sensitivity
 
   constructor(container: HTMLElement) {
     this.container = container
@@ -31,6 +68,8 @@ export class AsciiScene {
     }
 
     this.init()
+    this.addFrameControls()
+    this.setupScrollHandler()
   }
 
   private init(): void {
@@ -40,7 +79,17 @@ export class AsciiScene {
 
     // Camera setup
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000)
-    this.camera.position.set(0, 0, 500)
+    
+    // Set initial camera position from first keyframe
+    const firstFrame = this.keyframes[0]
+    this.camera.position.set(firstFrame.position.x, firstFrame.position.y, firstFrame.position.z)
+    this.camera.rotation.set(firstFrame.rotation.x, firstFrame.rotation.y, firstFrame.rotation.z)
+    this.camera.fov = firstFrame.fov
+    this.camera.updateProjectionMatrix()
+
+    if (firstFrame.lookAt) {
+      this.camera.lookAt(new THREE.Vector3(firstFrame.lookAt.x, firstFrame.lookAt.y, firstFrame.lookAt.z))
+    }
 
     // Add helpers
     this.addHelpers()
@@ -120,68 +169,13 @@ export class AsciiScene {
     cameraButton.style.borderRadius = '4px'
     cameraButton.style.cursor = 'pointer'
 
-    // Add FOV controls
-    const fovContainer = document.createElement('div')
-    fovContainer.style.display = 'flex'
-    fovContainer.style.alignItems = 'center'
-    fovContainer.style.gap = '8px'
-    fovContainer.style.marginLeft = '20px'
-
-    const fovLabel = document.createElement('label')
-    fovLabel.textContent = 'FOV:'
-    fovLabel.style.marginRight = '8px'
-
-    const fovSlider = document.createElement('input')
-    fovSlider.type = 'range'
-    fovSlider.min = '30'
-    fovSlider.max = '120'
-    fovSlider.value = '45'
-    fovSlider.style.width = '100px'
-
-    const fovNumber = document.createElement('input')
-    fovNumber.type = 'number'
-    fovNumber.min = '30'
-    fovNumber.max = '120'
-    fovNumber.value = '45'
-    fovNumber.style.width = '60px'
-    fovNumber.style.backgroundColor = '#333'
-    fovNumber.style.color = 'white'
-    fovNumber.style.border = '1px solid #666'
-    fovNumber.style.borderRadius = '4px'
-    fovNumber.style.padding = '2px 5px'
-
-    // FOV change handler
-    const updateFOV = (value: number) => {
-      const fov = Math.min(Math.max(value, 30), 120)
-      this.camera.fov = fov
-      this.camera.updateProjectionMatrix()
-      fovSlider.value = fov.toString()
-      fovNumber.value = fov.toString()
-    }
-
-    fovSlider.addEventListener('input', (e) => updateFOV(Number((e.target as HTMLInputElement).value)))
-    fovNumber.addEventListener('input', (e) => updateFOV(Number((e.target as HTMLInputElement).value)))
-
-    fovContainer.appendChild(fovLabel)
-    fovContainer.appendChild(fovSlider)
-    fovContainer.appendChild(fovNumber)
-
     toggleContainer.appendChild(checkbox)
     toggleContainer.appendChild(label)
     toggleContainer.appendChild(cameraButton)
-    toggleContainer.appendChild(fovContainer)
     this.container.appendChild(toggleContainer)
 
     checkbox.addEventListener('change', () => this.toggleHelpers(checkbox.checked))
     cameraButton.addEventListener('click', () => this.logCameraState())
-
-    // Controls
-    this.controls = new TrackballControls(this.camera, this.effect.domElement)
-    this.controls.minDistance = 100
-    this.controls.maxDistance = 800
-    this.controls.rotateSpeed = 1.0
-    this.controls.zoomSpeed = 1.2
-    this.controls.panSpeed = 0.8
 
     // Event listeners
     window.addEventListener('resize', this.handleResize)
@@ -261,15 +255,13 @@ export class AsciiScene {
 
   private render(): void {
     if (!this.effect || !this.scene || !this.camera) return
-    
-    this.controls.update()
+    this.updateCameraPosition()
     this.effect.render(this.scene, this.camera)
   }
 
   public dispose(): void {
     window.removeEventListener('resize', this.handleResize)
     this.container.removeChild(this.effect.domElement)
-    this.controls.dispose()
     
     // Clean up helpers
     this.helpers.forEach(helper => {
@@ -322,5 +314,168 @@ export class AsciiScene {
     console.log('Camera State:', cameraState)
     // Also log as a compact string for easy copying
     console.log(JSON.stringify(cameraState))
+  }
+
+  private addFrameControls(): void {
+    const animContainer = document.createElement('div')
+    animContainer.style.position = 'fixed'
+    animContainer.style.top = '80px'
+    animContainer.style.right = '20px'
+    animContainer.style.zIndex = '1000'
+    animContainer.style.color = 'white'
+    animContainer.style.display = 'flex'
+    animContainer.style.flexDirection = 'column'
+    animContainer.style.gap = '8px'
+    animContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'
+    animContainer.style.padding = '10px'
+    animContainer.style.borderRadius = '4px'
+
+    // Add navigation buttons
+    const navContainer = document.createElement('div')
+    navContainer.style.display = 'flex'
+    navContainer.style.alignItems = 'center'
+    navContainer.style.gap = '8px'
+    navContainer.style.marginBottom = '10px'
+
+    const prevButton = document.createElement('button')
+    prevButton.textContent = '< Prev'
+    prevButton.style.padding = '5px 10px'
+    prevButton.style.backgroundColor = '#333'
+    prevButton.style.color = 'white'
+    prevButton.style.border = '1px solid #666'
+    prevButton.style.borderRadius = '4px'
+    prevButton.style.cursor = 'pointer'
+
+    const nextButton = document.createElement('button')
+    nextButton.textContent = 'Next >'
+    nextButton.style.padding = '5px 10px'
+    nextButton.style.backgroundColor = '#333'
+    nextButton.style.color = 'white'
+    nextButton.style.border = '1px solid #666'
+    nextButton.style.borderRadius = '4px'
+    nextButton.style.cursor = 'pointer'
+
+    const frameDisplay = document.createElement('span')
+    frameDisplay.style.margin = '0 10px'
+    frameDisplay.textContent = `Frame: ${this.scrollProgress.toFixed(2)}/${this.keyframes.length - 1}`
+
+    prevButton.addEventListener('click', () => {
+      this.targetScrollProgress = Math.max(0, Math.floor(this.scrollProgress) - 1)
+    })
+
+    nextButton.addEventListener('click', () => {
+      this.targetScrollProgress = Math.min(this.keyframes.length - 1, Math.ceil(this.scrollProgress) + 1)
+    })
+
+    navContainer.appendChild(prevButton)
+    navContainer.appendChild(frameDisplay)
+    navContainer.appendChild(nextButton)
+
+    animContainer.appendChild(navContainer)
+    this.container.appendChild(animContainer)
+  }
+
+  private updateCameraToFrame(frameIndex: number): void {
+    this.targetScrollProgress = frameIndex
+  }
+
+  private setupScrollHandler(): void {
+    window.addEventListener('wheel', (event) => {
+      // Update target scroll progress based on scroll direction
+      this.targetScrollProgress = Math.max(0, Math.min(
+        this.keyframes.length - 1,
+        this.targetScrollProgress + event.deltaY * this.scrollMultiplier
+      ))
+    }, { passive: true })
+  }
+
+  private lerp(start: number, end: number, t: number): number {
+    return start * (1 - t) + end * t
+  }
+
+  private lerpVector3(start: THREE.Vector3Like, end: THREE.Vector3Like, t: number): THREE.Vector3 {
+    return new THREE.Vector3(
+      this.lerp(start.x, end.x, t),
+      this.lerp(start.y, end.y, t),
+      this.lerp(start.z, end.z, t)
+    )
+  }
+
+  private lerpRotation(start: THREE.Vector3Like, end: THREE.Vector3Like, t: number): THREE.Vector3 {
+    return new THREE.Vector3(
+      this.lerpAngle(start.x, end.x, t),
+      this.lerpAngle(start.y, end.y, t),
+      this.lerpAngle(start.z, end.z, t)
+    )
+  }
+
+  private lerpAngle(start: number, end: number, t: number): number {
+    // Ensure angles are between -PI and PI
+    const normalize = (angle: number) => {
+      while (angle > Math.PI) angle -= 2 * Math.PI
+      while (angle < -Math.PI) angle += 2 * Math.PI
+      return angle
+    }
+    
+    start = normalize(start)
+    end = normalize(end)
+    
+    // Choose shortest path
+    let diff = end - start
+    if (Math.abs(diff) > Math.PI) {
+      if (diff > 0) {
+        end -= 2 * Math.PI
+      } else {
+        end += 2 * Math.PI
+      }
+    }
+    
+    return this.lerp(start, end, t)
+  }
+
+  private updateCameraPosition(): void {
+    // Smoothly update current scroll progress
+    this.scrollProgress = this.lerp(
+      this.scrollProgress,
+      this.targetScrollProgress,
+      this.scrollSpeed
+    )
+
+    // Get the current frame index and progress to next frame
+    const currentFrameIndex = Math.floor(this.scrollProgress)
+    const nextFrameIndex = Math.min(currentFrameIndex + 1, this.keyframes.length - 1)
+    const frameLerpFactor = this.scrollProgress - currentFrameIndex
+
+    const currentFrame = this.keyframes[currentFrameIndex]
+    const nextFrame = this.keyframes[nextFrameIndex]
+
+    // Interpolate position
+    const position = this.lerpVector3(
+      currentFrame.position,
+      nextFrame.position,
+      frameLerpFactor
+    )
+
+    // Interpolate rotation
+    const rotation = this.lerpRotation(
+      currentFrame.rotation,
+      nextFrame.rotation,
+      frameLerpFactor
+    )
+
+    // Interpolate FOV
+    const fov = this.lerp(currentFrame.fov, nextFrame.fov, frameLerpFactor)
+
+    // Apply interpolated values
+    this.camera.position.copy(position)
+    this.camera.rotation.set(rotation.x, rotation.y, rotation.z)
+    this.camera.fov = fov
+    this.camera.updateProjectionMatrix()
+
+    // Update frame display if it exists
+    const frameDisplay = this.container.querySelector('span')
+    if (frameDisplay) {
+      frameDisplay.textContent = `Frame: ${this.scrollProgress.toFixed(2)}/${this.keyframes.length - 1}`
+    }
   }
 } 
