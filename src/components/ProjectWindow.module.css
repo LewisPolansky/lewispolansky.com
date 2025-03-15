@@ -1,3 +1,27 @@
+@keyframes fadeInStagger {
+  0%, 19.99% {
+    opacity: 0;
+  }
+  20%, 29.99% {
+    opacity: 0.5;
+  }
+  30%, 39.99% {
+    opacity: 0.6;
+  }
+  40%, 49.99% {
+    opacity: 0.7;
+  }
+  50%, 59.99% {
+    opacity: 0.8;
+  }
+  60%, 69.99% {
+    opacity: 0.9;
+  }
+  70%, 100% {
+    opacity: 1;
+  }
+}
+
 .window {
   position: fixed;
   background-color: #c0c0c0;
@@ -11,6 +35,10 @@
   border-right: 2px solid #000000;
   border-bottom: 2px solid #000000;
   box-shadow: none;
+  animation: fadeInStagger 2s steps(1) forwards;
+  user-select: none;
+  z-index: 1;
+  transition: width 0.2s ease-out, height 0.2s ease-out, z-index 0ms;
 }
 
 .titleBar {
@@ -22,6 +50,10 @@
   cursor: move;
   user-select: none;
   height: 18px;
+}
+
+.terminalTitleBar {
+  background-color: #001800 !important;
 }
 
 .titleText {
@@ -52,12 +84,28 @@
   font-size: 12px;
   font-family: 'MS Sans Serif', Tahoma, sans-serif;
   padding: 0;
+  padding-bottom: 2px;
   margin-left: 2px;
   box-shadow: inset -1px -1px #0a0a0a,inset 1px 1px #ffffff;
+  position: relative;
 }
 
 .controlButton:active {
   box-shadow: inset 1px 1px #0a0a0a,inset -1px -1px #ffffff;
+}
+
+.controlButton[aria-label="Minimize"]::before {
+  content: "";
+  position: absolute;
+  bottom: 3px;
+  left: 3px;
+  width: 8px;
+  height: 2px;
+  background-color: #000000;
+}
+
+.minimizeButton {
+  padding-bottom: 7px;
 }
 
 .menuBar {
@@ -92,18 +140,92 @@
   font-size: 12px;
   line-height: 1.2;
   letter-spacing: -0.2px;
-
   padding: 2px 6px;
+  scrollbar-width: auto;
+  user-select: text;
+}
+
+.windowContent::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background: #c0c0c0;
+}
+
+.windowContent::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border: none;
+  box-shadow: inset 1px 1px #ffffff, inset -1px -1px #808080;
+}
+
+.windowContent::-webkit-scrollbar-button:single-button {
+  background-color: #c0c0c0;
+  display: block;
+  height: 16px;
+  width: 16px;
+  box-shadow: inset 1px 1px #ffffff, inset -1px -1px #808080;
+}
+
+.windowContent::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4' viewBox='0 0 8 4'><path d='M0 4 L4 0 L8 4 Z' fill='black'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.windowContent::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4' viewBox='0 0 8 4'><path d='M0 0 L4 4 L8 0 Z' fill='black'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.windowContent::-webkit-scrollbar-track {
+  background: #c0c0c0;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080;
+}
+
+.windowContent::-webkit-scrollbar-corner {
+  background: #c0c0c0;
+}
+
+.windowContent::-webkit-scrollbar-button:active,
+.windowContent::-webkit-scrollbar-thumb:active {
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080;
 }
 
 .windowContent button {
-  background-color: #0000a0;
+  background-color: #c0c7e0;
   font-family: monospace;
-  color: #ffffff;
-  border: 1px solid #ffffff;
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
+  color: #000000;
+  border: none;
   margin-top: 5px;
-  border-radius: 2px;
-  padding: 2px 6px;
+  padding: 4px 8px;
+  box-shadow: inset -1px -1px #0a0a0a,
+              inset 1px 1px #ffffff,
+              inset -2px -2px #808080,
+              inset 2px 2px #dfdfdf;
+  min-width: 75px;
+  position: relative;
+  text-align: center;
+}
+
+.windowContent button:active {
+  box-shadow: inset -1px -1px #ffffff,
+              inset 1px 1px #0a0a0a,
+              inset -2px -2px #dfdfdf,
+              inset 2px 2px #808080;
+  padding: 5px 7px 3px 9px;
+}
+
+.windowContent button:focus {
+  outline: 1px dotted #000000;
+  outline-offset: -4px;
+}
+
+.windowContent button:disabled {
+  color: #808080;
+  text-shadow: 1px 1px #ffffff;
 }
 
 .resizeHandle {
@@ -113,7 +235,10 @@
   width: 12px;
   height: 12px;
   cursor: se-resize;
-  background: #c0c0c0;
+  background-image: 
+    linear-gradient(135deg, transparent calc(100% - 9px), #808080 calc(100% - 9px), #808080 calc(100% - 8px), transparent calc(100% - 8px)),
+    linear-gradient(135deg, transparent calc(100% - 6px), #808080 calc(100% - 6px), #808080 calc(100% - 5px), transparent calc(100% - 5px)),
+    linear-gradient(135deg, transparent calc(100% - 3px), #808080 calc(100% - 3px), #808080 calc(100% - 2px), transparent calc(100% - 2px));
 }
 
 .maximized {
@@ -139,3 +264,58 @@
   max-width: 100%;
   max-height: 100%;
 } 
+
+.windowContent img {
+  background-color: #8d8d8d;
+
+  max-width: 120px;
+  padding: 5px;
+  height: auto;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  display: block;
+  /* Pixelation effect */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  /* CRT effects */
+  filter: 
+    brightness(1.1)
+    contrast(0.8)
+    blur(0.3px);
+  position: relative;
+  /* Windows 95 pixelation effect */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  /* CRT scan lines effect */
+  background-image: linear-gradient(
+    rgba(0, 0, 0, 0.1) 1px, 
+    transparent 1px
+  );
+  background-size: 100% 2px;
+  /* Slight color distortion */
+  box-shadow: inset 0 0 5px rgba(50, 50, 200, 0.2);
+
+  border: 2px inset;
+}
+
+/* Add focused window styles */
+.focused {
+  z-index: 999;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 2px solid #404040;
+  border-bottom: 2px solid #404040;
+}
+
+.focused .titleBar {
+  background-color: #000080;
+}
+
+.unfocused .titleBar {
+  background-color: #808080;
+}
+
+.titleText {
+  color: #ffffff;
+}

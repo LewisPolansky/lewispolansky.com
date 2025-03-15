@@ -34,7 +34,7 @@
   font-family: monospace;
   color: white;
   font-size: 20px;
-  z-index: 1000;
+  z-index: 0;
   margin: 0;
   pointer-events: none;
 
@@ -97,4 +97,141 @@
 
 .advanceButton:active {
   opacity: 0.5;
+}
+
+.readmeContent {
+  font-family: 'MS Sans Serif', 'Fixedsys', monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 8px;
+  color: #000000;
+}
+
+.readmeContent h2 {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #000080;
+}
+
+.readmeContent h3 {
+  font-size: 13px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  color: #000080;
+  border-bottom: 1px solid #808080;
+  padding-bottom: 4px;
+}
+
+.readmeContent h4 {
+  font-size: 12px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  color: #000000;
+}
+
+.readmeContent p {
+  margin-bottom: 8px;
+}
+
+.readmeContent ul {
+  list-style-type: square;
+  margin-left: 20px;
+  margin-bottom: 12px;
+}
+
+.readmeContent li {
+  margin-bottom: 4px;
+}
+
+.readmeContent a {
+  color: #0000FF;
+  text-decoration: none;
+}
+
+.readmeContent a:hover {
+  text-decoration: underline;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.techStack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.techBadge {
+  background-color: #c0c0c0;
+  border: 1px solid #808080;
+  border-radius: 2px;
+  padding: 2px 6px;
+  font-size: 11px;
+  box-shadow: inset 1px 1px #ffffff, inset -1px -1px #404040;
+}
+
+.footnote {
+  font-style: italic;
+  color: #404040;
+  margin-top: 4px;
+}
+
+.awards, .experience {
+  margin-bottom: 16px;
+}
+
+.award, .role {
+  background-color: #f0f0f0;
+  border: 1px solid #808080;
+  margin-bottom: 8px;
+  padding: 6px;
+  box-shadow: inset 1px 1px #ffffff, inset -1px -1px #404040;
+  max-width: 500px;
+}
+
+.award h4, .role h4 {
+  color: #000080;
+  margin-top: 0;
+}
+
+.award p, .role p {
+  margin-bottom: 0;
+  font-size: 11px;
+}
+
+.readmeContent strong {
+  color: #000080;
+  font-weight: bold;
+}
+
+/* Scrollbar styles to match Windows 95 */
+.readmeContent::-webkit-scrollbar {
+  width: 16px;
+  background: #c0c0c0;
+}
+
+.readmeContent::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border: none;
+  box-shadow: inset 1px 1px #ffffff, inset -1px -1px #404040;
+}
+
+.readmeContent::-webkit-scrollbar-button {
+  display: block;
+  height: 16px;
+  width: 16px;
+  background-color: #c0c0c0;
+  box-shadow: inset 1px 1px #ffffff, inset -1px -1px #404040;
+}
+
+.readmeContent::-webkit-scrollbar-track {
+  background: #c0c0c0;
+  box-shadow: inset 1px 1px #404040, inset -1px -1px #ffffff;
+}
+
+.readmeContent::-webkit-scrollbar-corner {
+  background: #c0c0c0;
 }

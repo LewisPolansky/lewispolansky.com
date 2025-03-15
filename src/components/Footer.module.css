@@ -1,0 +1,54 @@
+.footer {
+  font-family: monospace;
+  letter-spacing: -0.2px;
+  font-size: 12px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  text-align: center;
+  color: white;
+
+  animation: fadeInFooter 2s steps(1) forwards;
+}
+
+@keyframes fadeInFooter {
+  0%, 19.99% {
+    opacity: 0;
+  }
+  20%, 29.99% {
+    opacity: 0.5;
+  }
+  30%, 39.99% {
+    opacity: 0.6;
+  }
+  40%, 49.99% {
+    opacity: 0.7;
+  }
+  50%, 59.99% {
+    opacity: 0.8;
+  }
+  60%, 69.99% {
+    opacity: 0.9;
+  }
+  70%, 100% {
+    opacity: 1;
+  }
+}
+
+.footer a {
+  color: skyblue;
+}
+
+.footer a:visited {
+  color: #3b7bdb;
+}
+
+.footer a:hover {
+  color: #ffffff;
+}
+
+.footer a:active {
+  color: #3b7bdb;
+  text-decoration: none;
+  font-weight: normal;
+}

@@ -1,0 +1,238 @@
+.terminal {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 200px;
+  min-height: 100px;
+  border-top: 1px solid #dfdfdf;
+  border-left: 1px solid #dfdfdf;
+  border-right: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  background-color: #000000;
+}
+
+.terminalContent {
+  flex: 1;
+  overflow: auto;
+  padding: 2px;
+  border: inset 1px #808080;
+  background-color: #000000;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  padding: 8px;
+  white-space: pre;
+  overflow-wrap: break-word;
+  line-height: 1.2;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+/* Updated scrollbar styling to match ProjectWindow pattern */
+.terminalContent::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background: #00ff00;
+}
+
+.terminalContent::-webkit-scrollbar-thumb {
+  background-color: #00ff009a;
+  border: none;
+  box-shadow: inset 1px 1px #00ff00, inset -1px -1px #004400;
+}
+
+.terminalContent::-webkit-scrollbar-button:single-button {
+  background-color: #000000;
+  display: block;
+  height: 16px;
+  width: 16px;
+  box-shadow: inset 1px 1px #00ff00, inset -1px -1px #004400;
+}
+
+.terminalContent::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4' viewBox='0 0 8 4'><path d='M0 4 L4 0 L8 4 Z' fill='%2300ff00'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.terminalContent::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4' viewBox='0 0 8 4'><path d='M0 0 L4 4 L8 0 Z' fill='%2300ff00'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.terminalContent::-webkit-scrollbar-track {
+  background: #000000;
+  box-shadow: inset -1px -1px #00ff00, inset 1px 1px #004400;
+}
+
+.terminalContent::-webkit-scrollbar-corner {
+  background: #000000;
+}
+
+.terminalContent::-webkit-scrollbar-button:active,
+.terminalContent::-webkit-scrollbar-thumb:active {
+  box-shadow: inset -1px -1px #00ff00, inset 1px 1px #004400;
+}
+
+.terminalTitleBar {
+  background-color: #001800 !important;
+  padding: 2px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  user-select: none;
+  height: 18px;
+}
+
+.terminalTitleBar.focused {
+  background-color: #001800 !important;
+}
+
+.terminalMenuBar {
+  padding: 1px 2px;
+  display: flex;
+  gap: 8px;
+  background-color: #002000;
+  border-bottom: 1px solid #004000;
+}
+
+.terminalMenuItem {
+  font-size: 12px;
+  font-family: 'MS Sans Serif', 'Fixedsys', monospace;
+  padding: 2px 6px;
+  cursor: default;
+  color: #00ff00;
+}
+
+.terminalMenuItem:hover {
+  background-color: #004000;
+}
+
+.terminalControlButton {
+  width: 16px;
+  height: 14px;
+  border: 1px solid #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  padding-bottom: 2px;
+  margin-left: 2px;
+  background-color: #002000;
+  color: #00ff00;
+  border-color: #004000;
+}
+
+.terminalControlButton:active {
+  background-color: #001000;
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background-color: #00ff00;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.commandLine {
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  animation: fadeIn 0.1s ease-out forwards;
+  opacity: 0;
+}
+
+.commandOutput {
+  margin: 4px 0 8px 16px;
+  white-space: pre-wrap;
+  animation: fadeIn 0.1s ease-out forwards;
+  opacity: 0;
+}
+
+.inputLine {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.prompt {
+  color: #00ff00;
+  margin-right: 8px;
+}
+
+.commandInput {
+  background: transparent;
+  border: none;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  flex: 1;
+  outline: none;
+  caret-color: #00ff00;
+  padding: 0;
+  margin: 0;
+  white-space: pre;
+  min-width: 1ch;
+  width: 100%;
+}
+
+/* Text Editor Styles */
+.editorContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #000000;
+}
+
+.editorHeader {
+  background-color: #002800;
+  color: #00ff00;
+  padding: 5px 10px;
+  font-size: 14px;
+  border-bottom: 1px solid #004800;
+  text-align: center;
+}
+
+.editorContent {
+  flex: 1;
+  padding: 10px;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  line-height: 1.5;
+  overflow-y: auto;
+  min-height: 200px;
+  caret-color: #00ff00;
+}
+
+.asciiArt {
+  color: #00ff00;
+  font-family: monospace;
+  white-space: pre;
+  margin-bottom: 16px;
+  animation: fadeIn 0.1s ease-out forwards;
+  opacity: 0;
+} 

@@ -11,7 +11,7 @@ export class AsciiScene {
   private effect!: AsciiEffect
   private container: HTMLElement
   private model: THREE.Object3D | null = null
-  private clock: THREE.Clock
+  /* Kept for future animation timing */
   private helpers: THREE.Object3D[] = []
   private loadingManager: THREE.LoadingManager
   private showHelpers: boolean = false
@@ -33,11 +33,10 @@ export class AsciiScene {
   constructor(container: HTMLElement, options?: { onDoneScrolling?: () => void }) {
     this.container = container
     this.onDoneScrolling = options?.onDoneScrolling
-    this.clock = new THREE.Clock()
     
     // Create loading manager
     this.loadingManager = new THREE.LoadingManager()
-    this.loadingManager.onProgress = (url, loaded, total) => {
+    this.loadingManager.onProgress = (_url: string, loaded: number, total: number) => {
       const progress = (loaded / total) * 100
       console.log(`Loading: ${Math.round(progress)}%`)
     }
@@ -312,26 +311,27 @@ export class AsciiScene {
     })
   }
 
-  private logCameraState(): void {
-    const cameraState = {
-      position: {
-        x: this.camera.position.x,
-        y: this.camera.position.y,
-        z: this.camera.position.z
-      },
-      rotation: {
-        x: this.camera.rotation.x,
-        y: this.camera.rotation.y,
-        z: this.camera.rotation.z
-      },
-      fov: this.camera.fov,
-      lookAt: { x: 0, y: 0, z: 0 }
-    }
+  /* Debugging utility - kept for future development */
+  // private logCameraState(): void {
+  //   const cameraState = {
+  //     position: {
+  //       x: this.camera.position.x,
+  //       y: this.camera.position.y,
+  //       z: this.camera.position.z
+  //     },
+  //     rotation: {
+  //       x: this.camera.rotation.x,
+  //       y: this.camera.rotation.y,
+  //       z: this.camera.rotation.z
+  //     },
+  //     fov: this.camera.fov,
+  //     lookAt: { x: 0, y: 0, z: 0 }
+  //   }
     
-    console.log('Camera State:', cameraState)
-    // Also log as a compact string for easy copying
-    console.log(JSON.stringify(cameraState))
-  }
+  //   console.log('Camera State:', cameraState)
+  //   // Also log as a compact string for easy copying
+  //   console.log(JSON.stringify(cameraState))
+  // }
 
   /* Frame Controls UI - Commented out for production
   private addFrameControls(): void {
@@ -504,13 +504,14 @@ export class AsciiScene {
     return start * (1 - t) + end * t
   }
 
-  private lerpVector3(start: THREE.Vector3Like, end: THREE.Vector3Like, t: number): THREE.Vector3 {
-    return new THREE.Vector3(
-      this.lerp(start.x, end.x, t),
-      this.lerp(start.y, end.y, t),
-      this.lerp(start.z, end.z, t)
-    )
-  }
+  /* Utility function for future camera animations */
+  // private lerpVector3(start: THREE.Vector3Like, end: THREE.Vector3Like, t: number): THREE.Vector3 {
+  //   return new THREE.Vector3(
+  //     this.lerp(start.x, end.x, t),
+  //     this.lerp(start.y, end.y, t),
+  //     this.lerp(start.z, end.z, t)
+  //   )
+  // }
 
   private lerpRotation(start: THREE.Vector3Like, end: THREE.Vector3Like, t: number): THREE.Vector3 {
     return new THREE.Vector3(

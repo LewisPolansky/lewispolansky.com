@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './ProjectWindow.module.css';
+import clsx from 'clsx';
 
 interface ProjectWindowProps {
   title: string;
@@ -9,28 +10,45 @@ interface ProjectWindowProps {
   onClose?: () => void;
   minimizable?: boolean;
   maximizable?: boolean;
+  isTerminal?: boolean;
 }
 
 export const ProjectWindow: React.FC<ProjectWindowProps> = ({
   title,
   children,
   initialPosition = { x: 50, y: 50 },
-  initialSize = { width: 350 },
+  initialSize = { width: 350, height: 275 },
   onClose,
-  minimizable = true,
+  // minimizable = true,
   maximizable = true,
+  isTerminal = false,
 }) => {
   const [position, setPosition] = useState(initialPosition);
   const [size, setSize] = useState(initialSize);
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
+  // const [isMinimized, setIsMinimized] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [prevSize, setPrevSize] = useState(initialSize);
   const [prevPosition, setPrevPosition] = useState(initialPosition);
+  const [isFocused, setIsFocused] = useState(false);
   
   const windowRef = useRef<HTMLDivElement>(null);
+
+  // Handle window focus
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      if (windowRef.current && windowRef.current.contains(e.target as Node)) {
+        setIsFocused(true);
+      } else {
+        setIsFocused(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleGlobalClick);
+    return () => document.removeEventListener('mousedown', handleGlobalClick);
+  }, []);
 
   // Handle dragging
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -93,13 +111,19 @@ export const ProjectWindow: React.FC<ProjectWindowProps> = ({
     }
   };
 
-  const handleMinimize = () => {
-    setIsMinimized(!isMinimized);
-  };
+  // Minimize functionality to be implemented
+  // const handleMinimize = () => {
+  //   setIsMinimized(!isMinimized);
+  // };
 
   return (
     <div 
-      className={`${styles.window} ${isMaximized ? styles.maximized : ''} ${isMinimized ? styles.minimized : ''}`}
+      className={clsx(
+        styles.window,
+        isMaximized && styles.maximized,
+        // isMinimized && styles.minimized,
+        isFocused ? styles.focused : styles.unfocused
+      )}
       style={{ 
         left: `${position.x}px`, 
         top: `${position.y}px`,
@@ -108,14 +132,21 @@ export const ProjectWindow: React.FC<ProjectWindowProps> = ({
       }}
       ref={windowRef}
     >
-      <div className={styles.titleBar} onMouseDown={handleMouseDown}>
+      <div className={clsx(
+        styles.titleBar, 
+        isTerminal && styles.terminalTitleBar,
+        isFocused ? styles.focused : styles.unfocused
+      )} onMouseDown={handleMouseDown}>
         <div className={styles.titleText}>{title}</div>
         <div className={styles.windowControls}>
-          {minimizable && (
-            <button className={styles.controlButton} onClick={handleMinimize}>
+          {/* {minimizable && (
+            <button 
+              className={clsx(styles.controlButton, styles.minimizeButton)} 
+              onClick={handleMinimize}
+            >
               _
             </button>
-          )}
+          )} */}
           {maximizable && (
             <button className={styles.controlButton} onClick={handleMaximize}>
               □

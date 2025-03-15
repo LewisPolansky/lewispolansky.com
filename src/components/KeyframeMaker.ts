@@ -13,7 +13,7 @@ export class KeyframeMaker {
   private controls!: TrackballControls
   private container: HTMLElement
   private model: THREE.Object3D | null = null
-  private clock: THREE.Clock
+  /* Kept for future animation timing */
   private helpers: THREE.Object3D[] = []
   private loadingManager: THREE.LoadingManager
   private existingKeyframes = keyframesData.keyframes
@@ -22,11 +22,10 @@ export class KeyframeMaker {
 
   constructor(container: HTMLElement) {
     this.container = container
-    this.clock = new THREE.Clock()
     
     // Create loading manager
     this.loadingManager = new THREE.LoadingManager()
-    this.loadingManager.onProgress = (url, loaded, total) => {
+    this.loadingManager.onProgress = (_url: string, loaded: number, total: number) => {
       const progress = (loaded / total) * 100
       console.log(`Loading: ${Math.round(progress)}%`)
     }
