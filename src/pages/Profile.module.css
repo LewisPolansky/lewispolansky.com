@@ -173,6 +173,10 @@
   box-shadow: inset 1px 1px #ffffff, inset -1px -1px #404040;
 }
 
+.techBadge:hover {
+  box-shadow: 1px 1px #ffffff, inset 1px 1px #404040;
+}
+
 .footnote {
   font-style: italic;
   color: #404040;
@@ -234,4 +238,33 @@
 
 .readmeContent::-webkit-scrollbar-corner {
   background: #c0c0c0;
+}
+
+.reopenButton {
+  position: fixed;
+  left: 50px;
+  top: 300px;
+  background-color: #c0c0c0;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  padding: 4px 8px;
+  border: none;
+  box-shadow: inset -1px -1px #0a0a0a,
+              inset 1px 1px #ffffff,
+              inset -2px -2px #808080,
+              inset 2px 2px #dfdfdf;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.reopenButton:hover {
+  background-color: #d0d0d0;
+}
+
+.reopenButton:active {
+  box-shadow: inset -1px -1px #ffffff,
+              inset 1px 1px #0a0a0a,
+              inset -2px -2px #dfdfdf,
+              inset 2px 2px #808080;
+  padding: 5px 7px 3px 9px;
 }

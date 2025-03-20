@@ -2,12 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ProjectWindow } from './ProjectWindow';
 import styles from './Terminal.module.css';
 import heyThereTxt from '../data/heyo.txt?raw';
+import Dropola from './Dropola';
 
 interface TerminalProps {
   title?: string;
   initialPosition?: { x: number; y: number };
   initialSize?: { width?: number; height?: number };
   onClose?: () => void;
+  onRunCommand?: (command: string) => void;
+  onKillProcess?: (processName: string) => void;
+  systemMessage?: string;
+  activeProcesses?: { name: string; count: number }[];
 }
 
 interface TerminalCommand {
@@ -56,9 +61,16 @@ Available commands:
   cat   - Display contents of a file (usage: cat filename)
   clear - Clear the terminal screen
   help  - Show this help message
-  lew   - Text editor (usage: lew filename)
+  lew   - Lewis's Editing Workshop (usage: lew filename)
   rm    - Delete a file (usage: rm filename)
   download - Download a file to your PC (usage: download filename)
+  run   - Run a program (usage: run program.exe)
+         - Try "run constellation.exe" to open a new browser window!
+         - Try "run race.exe" to test your typing speed!
+         - Try "run starbox.exe" to play the Starbox puzzle!
+         - Try "run dropola.exe" to play Dropola!
+  ps    - List running processes
+  kill  - Close a running process (usage: kill process_name)
 `;
 
 export const Terminal: React.FC<TerminalProps> = ({
@@ -66,6 +78,10 @@ export const Terminal: React.FC<TerminalProps> = ({
   initialPosition,
   initialSize = { width: 600, height: 400 },
   onClose,
+  onRunCommand,
+  onKillProcess,
+  systemMessage,
+  activeProcesses = [],
 }) => {
   const [commandHistory, setCommandHistory] = useState<TerminalCommand[]>([]);
   const [currentChars, setCurrentChars] = useState<string[]>([]);
@@ -79,6 +95,8 @@ export const Terminal: React.FC<TerminalProps> = ({
   const dbRef = useRef<IDBDatabase | null>(null);
   // Added for save feedback
   const [showSaveFeedback, setShowSaveFeedback] = useState(false);
+  // Added for Dropola game
+  const [isDropolaRunning, setIsDropolaRunning] = useState(false);
 
   // Open IndexedDB connection
   useEffect(() => {
@@ -225,6 +243,61 @@ export const Terminal: React.FC<TerminalProps> = ({
         return '';
       case 'help':
         return HELP_TEXT;
+      case 'ps': {
+        if (activeProcesses.length === 0) {
+          return 'No processes currently running.';
+        }
+        
+        let output = 'PROCESS NAME                COUNT\n';
+        output += '-----------------------------\n';
+        
+        activeProcesses.forEach(proc => {
+          // Pad the name to align columns
+          const paddedName = proc.name.padEnd(25, ' ');
+          output += `${paddedName} ${proc.count}\n`;
+        });
+        
+        return output;
+      }
+      case 'run': {
+        if (args.length < 2) return 'Usage: run <program.exe>';
+        const program = args[1].toLowerCase();
+        
+        // Handle system programs
+        if (program === 'constellation.exe') {
+          if (onRunCommand) {
+            onRunCommand('constellation.exe');
+            return 'Starting Constellation Browser...';
+          }
+          return 'Unable to start program: Constellation Browser not installed';
+        } else if (program === 'race.exe') {
+          if (onRunCommand) {
+            onRunCommand('race.exe');
+            return 'Starting ASCII Racing Challenge...';
+          }
+          return 'Unable to start program: Racing app not installed';
+        } else if (program === 'starbox.exe') {
+          if (onRunCommand) {
+            onRunCommand('starbox.exe');
+            return 'Starting Starbox puzzle game...';
+          }
+          return 'Unable to start program: Starbox not installed';
+        } else if (program === 'dropola.exe') {
+          if (onRunCommand) {
+            // If we're running in the Terminal window, start Dropola in the embedded view
+            if (!initialPosition) {
+              setIsDropolaRunning(true);
+              return 'Starting Dropola game in terminal window...';
+            }
+            // Otherwise delegate to the parent component to open in a new window
+            onRunCommand('dropola.exe');
+            return 'Starting Dropola game...';
+          }
+          return 'Unable to start program: Dropola not installed';
+        }
+        
+        return `Unknown program: ${args[1]}`;
+      }
       case 'lew': {
         if (args.length < 2) return 'Usage: lew <filename>';
         const filename = args[1];
@@ -267,6 +340,28 @@ export const Terminal: React.FC<TerminalProps> = ({
         downloadFile(filename, virtualFiles[filename]);
         return `Downloading ${filename} to your PC...`;
       }
+      case 'kill': {
+        if (args.length < 2) return 'Usage: kill <process_name>';
+        
+        const processName = args.slice(1).join(' ');
+        const processExists = activeProcesses.some(proc => 
+          proc.name.toLowerCase() === processName.toLowerCase());
+        
+        if (!processExists) {
+          return `No process found with name: ${processName}`;
+        }
+        
+        if (processName.toLowerCase() === 'lewos terminal') {
+          return `Cannot kill the Terminal process. That would be suicide!`;
+        }
+        
+        if (onKillProcess) {
+          onKillProcess(processName);
+          return `Sending termination signal to ${processName}...`;
+        }
+        
+        return `Unable to kill process: ${processName}`;
+      }
       default:
         return `Command not found: ${cmd}. Type 'help' for available commands.`;
     }
@@ -305,7 +400,7 @@ export const Terminal: React.FC<TerminalProps> = ({
       e.preventDefault();
       saveFile(textEditor.filename, textEditor.content);
       setCommandHistory(prev => [...prev, { 
-        command: '', 
+        command: '',
         output: `File ${textEditor.filename} saved.` 
       }]);
       return;
@@ -399,68 +494,105 @@ export const Terminal: React.FC<TerminalProps> = ({
     }
   }, [commandHistory, textEditor]);
 
+  // Handle system messages
+  useEffect(() => {
+    if (systemMessage) {
+      setCommandHistory(prev => [...prev, { 
+        command: '', 
+        output: `System: ${systemMessage}` 
+      }]);
+      
+      // Reset the message after it's displayed
+      if (onRunCommand) {
+        // We're using onRunCommand as a callback function to reset the message
+        // A bit of a hack, but it works for this simple use case
+        setTimeout(() => onRunCommand(''), 100);
+      }
+    }
+  }, [systemMessage, onRunCommand]);
+
+  // Handle Dropola exit
+  const handleDropolaExit = () => {
+    setIsDropolaRunning(false);
+    setCommandHistory(prev => [...prev, { 
+      command: '', 
+      output: 'Dropola game closed.' 
+    }]);
+  };
+
   return (
     <ProjectWindow
-      title={textEditor ? `LewOS Editor - ${textEditor.filename}` : title}
+      title={
+        isDropolaRunning 
+          ? 'Dropola' 
+          : textEditor 
+            ? `LewOS Editor - ${textEditor.filename}` 
+            : title
+      }
       initialPosition={initialPosition}
       initialSize={initialSize}
       onClose={onClose}
+      icon={isDropolaRunning ? "joystick_106" : textEditor ? "html_page" : "computer"}
       maximizable
       isTerminal
     >
-      <div 
-        className={styles.terminalContent} 
-        ref={terminalRef}
-        onClick={handleTerminalClick}
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
-      >
-        {!textEditor ? (
-          <>
-            <pre 
-              className={styles.asciiArt} 
-              style={{ animationDelay: '0s' }}
-            >
-              {LEWOS_ASCII}
-            </pre>
-            {commandHistory.map((entry, i) => (
-              <div key={i}>
-                <div 
-                  className={styles.commandLine}
-                  style={{ animationDelay: `${0.1 * (i * 2)}s` }}
-                >
-                  <span className={styles.prompt}>{'#'}</span> {entry.command}
-                </div>
-                {entry.output && (
-                  <pre 
-                    className={styles.commandOutput}
-                    style={{ animationDelay: `${0.1 * (i * 2 + 1)}s` }}
+      {isDropolaRunning ? (
+        <Dropola onClose={handleDropolaExit} />
+      ) : (
+        <div 
+          className={styles.terminalContent} 
+          ref={terminalRef}
+          onClick={handleTerminalClick}
+          onKeyDown={handleKeyDown}
+          tabIndex={0}
+        >
+          {!textEditor ? (
+            <>
+              <pre 
+                className={styles.asciiArt} 
+                style={{ animationDelay: '0s' }}
+              >
+                {LEWOS_ASCII}
+              </pre>
+              {commandHistory.map((entry, i) => (
+                <div key={i}>
+                  <div 
+                    className={styles.commandLine}
+                    style={{ animationDelay: `${0.1 * (i * 2)}s` }}
                   >
-                    {entry.output}
-                  </pre>
-                )}
+                    <span className={styles.prompt}>{'#'}</span> {entry.command}
+                  </div>
+                  {entry.output && (
+                    <pre 
+                      className={styles.commandOutput}
+                      style={{ animationDelay: `${0.1 * (i * 2 + 1)}s` }}
+                    >
+                      {entry.output}
+                    </pre>
+                  )}
+                </div>
+              ))}
+              <div className={styles.inputLine}>
+                <span className={styles.prompt}>{'#'}</span>
+                <span className={styles.commandInput}>
+                  {currentChars.join('')}
+                  <span className={styles.cursor} />
+                </span>
               </div>
-            ))}
-            <div className={styles.inputLine}>
-              <span className={styles.prompt}>{'#'}</span>
-              <span className={styles.commandInput}>
-                {currentChars.join('')}
+            </>
+          ) : (
+            <div className={styles.editorContainer}>
+              <div className={styles.editorHeader} style={showSaveFeedback ? { backgroundColor: '#008800', transition: 'background-color 0.3s' } : {}}>
+                {textEditor.filename} | {showSaveFeedback ? 'Saved!' : 'Press Ctrl+S to save, Esc to exit'}
+              </div>
+              <div className={styles.editorContent}>
+                {textEditor.content}
                 <span className={styles.cursor} />
-              </span>
+              </div>
             </div>
-          </>
-        ) : (
-          <div className={styles.editorContainer}>
-            <div className={styles.editorHeader} style={showSaveFeedback ? { backgroundColor: '#008800', transition: 'background-color 0.3s' } : {}}>
-              {textEditor.filename} | {showSaveFeedback ? 'Saved!' : 'Press Ctrl+S to save, Esc to exit'}
-            </div>
-            <div className={styles.editorContent}>
-              {textEditor.content}
-              <span className={styles.cursor} />
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </ProjectWindow>
   );
 };

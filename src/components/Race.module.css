@@ -1,0 +1,388 @@
+.raceContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #c0c0c0;
+  color: #000000;
+  font-family: 'MS Sans Serif', 'Fixedsys', monospace;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.header {
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 18px;
+  text-align: center;
+  margin: 0 0 10px 0;
+  color: #000080;
+}
+
+.statsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #c0c0c0;
+  padding: 5px;
+  border: inset 2px #808080;
+  margin-bottom: 10px;
+}
+
+.wpmCounter {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.wpmValue {
+  color: #000080;
+  font-size: 16px;
+}
+
+.errorCounter {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.errorValue {
+  color: #aa0000;
+  font-size: 16px;
+}
+
+.progressBar {
+  flex: 1;
+  height: 20px;
+  background-color: #ffffff;
+  border: inset 2px #808080;
+  margin: 0 15px;
+  position: relative;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #008080;
+  transition: width 0.2s ease-out;
+}
+
+.raceTrack {
+  background-color: #d0d0d0;
+  border: inset 2px #808080;
+  position: relative;
+  height: 120px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.car {
+  position: absolute;
+  top: 20px;
+  transition: left 0.2s ease-out;
+  color: #000080;
+  font-size: 12px;
+  line-height: 1.1;
+  z-index: 10;
+  font-family: monospace;
+}
+
+.car pre {
+  margin: 0;
+  white-space: pre;
+}
+
+.finishLine {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  color: #000000;
+  font-size: 12px;
+  line-height: 1;
+  z-index: 5;
+  font-family: monospace;
+}
+
+.finishLine pre {
+  margin: 0;
+  white-space: pre;
+}
+
+.textArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border: inset 2px #808080;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.readyScreen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.readyScreen h2 {
+  font-size: 16px;
+  color: #000080;
+  margin: 0 0 15px 0;
+}
+
+.readyScreen p {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.startButton {
+  background-color: #c0c0c0;
+  font-family: 'MS Sans Serif', 'Fixedsys', monospace;
+  font-size: 14px;
+  padding: 5px 20px;
+  margin-top: 20px;
+  border: none;
+  cursor: pointer;
+  box-shadow: inset -1px -1px #0a0a0a,
+              inset 1px 1px #ffffff,
+              inset -2px -2px #808080,
+              inset 2px 2px #dfdfdf;
+}
+
+.startButton:active {
+  box-shadow: inset -1px -1px #ffffff,
+              inset 1px 1px #0a0a0a,
+              inset -2px -2px #dfdfdf,
+              inset 2px 2px #808080;
+  padding: 6px 19px 4px 21px;
+}
+
+.statsBox {
+  margin-top: 30px;
+  border: 1px solid #808080;
+  padding: 10px;
+  background-color: #f0f0f0;
+  width: 80%;
+  max-width: 350px;
+}
+
+.statsBox h3 {
+  font-size: 14px;
+  color: #000080;
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+.statsBox p {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.textDisplay {
+  font-family: monospace;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: #ffffff;
+  color: #000000;
+  padding: 10px;
+  border: inset 2px #808080;
+  height: 150px;
+  margin-bottom: 10px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.userInput {
+  font-family: monospace;
+  font-size: 16px;
+  line-height: 1.5;
+  flex: 1;
+  min-height: 100px;
+  padding: 10px;
+  border: inset 2px #808080;
+  outline: none;
+  resize: none;
+  white-space: pre-wrap;
+}
+
+.userInput:focus {
+  outline: 2px dotted #000080;
+  outline-offset: -4px;
+}
+
+/* Add a special class for visible spaces to help users see them */
+.correct, .incorrect, .textDisplay span {
+  white-space: pre-wrap;
+  position: relative;
+}
+
+/* Special class for spaces to make them visible */
+.space {
+  position: relative;
+}
+
+.space::after {
+  content: '·';
+  position: absolute;
+  left: 0;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Make typed spaces visible in correct/incorrect states */
+.correct.space::after {
+  color: #008000;
+}
+
+.incorrect.space::after {
+  color: #ff0000;
+}
+
+/* Special styling when an element has race-focused class */
+:global(.race-focused) .textDisplay {
+  border-color: #000080;
+}
+
+/* Ensure text display preserves whitespace */
+.textDisplay {
+  font-family: monospace;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: #ffffff;
+  color: #000000;
+  padding: 10px;
+  border: inset 2px #808080;
+  height: 150px;
+  margin-bottom: 10px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.correct {
+  color: #008000;
+}
+
+.incorrect {
+  color: #ff0000;
+  text-decoration: underline;
+}
+
+.resultsScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 15px;
+}
+
+.resultsScreen h2 {
+  font-size: 18px;
+  color: #000080;
+  margin: 0 0 15px 0;
+}
+
+.resultsStats {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.resultsStats p {
+  font-size: 16px;
+  margin: 8px 0;
+}
+
+.wpmResult {
+  font-size: 24px;
+  font-weight: bold;
+  color: #008000;
+}
+
+.sessionStats, .allTimeStats {
+  margin: 10px 0;
+  border: 1px solid #808080;
+  padding: 10px;
+  background-color: #f0f0f0;
+  width: 80%;
+  max-width: 300px;
+}
+
+.sessionStats h3, .allTimeStats h3 {
+  font-size: 14px;
+  color: #000080;
+  margin: 0 0 8px 0;
+}
+
+.sessionStats p, .allTimeStats p {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+/* Add scrollbar styling to match the Windows 95 aesthetic */
+.raceContainer::-webkit-scrollbar,
+.textArea::-webkit-scrollbar,
+.textDisplay::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background: #c0c0c0;
+}
+
+.raceContainer::-webkit-scrollbar-thumb,
+.textArea::-webkit-scrollbar-thumb,
+.textDisplay::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border: none;
+  box-shadow: inset 1px 1px #ffffff, inset -1px -1px #808080;
+}
+
+.raceContainer::-webkit-scrollbar-button:single-button,
+.textArea::-webkit-scrollbar-button:single-button,
+.textDisplay::-webkit-scrollbar-button:single-button {
+  background-color: #c0c0c0;
+  display: block;
+  height: 16px;
+  width: 16px;
+  box-shadow: inset 1px 1px #ffffff, inset -1px -1px #808080;
+}
+
+.raceContainer::-webkit-scrollbar-button:single-button:vertical:decrement,
+.textArea::-webkit-scrollbar-button:single-button:vertical:decrement,
+.textDisplay::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4' viewBox='0 0 8 4'><path d='M0 4 L4 0 L8 4 Z' fill='black'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.raceContainer::-webkit-scrollbar-button:single-button:vertical:increment,
+.textArea::-webkit-scrollbar-button:single-button:vertical:increment,
+.textDisplay::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4' viewBox='0 0 8 4'><path d='M0 0 L4 4 L8 0 Z' fill='black'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.raceContainer::-webkit-scrollbar-track,
+.textArea::-webkit-scrollbar-track,
+.textDisplay::-webkit-scrollbar-track {
+  background: #c0c0c0;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080;
+}
+
+.raceContainer::-webkit-scrollbar-corner,
+.textArea::-webkit-scrollbar-corner,
+.textDisplay::-webkit-scrollbar-corner {
+  background: #c0c0c0;
+}
+
+.raceContainer::-webkit-scrollbar-button:active,
+.raceContainer::-webkit-scrollbar-thumb:active,
+.textArea::-webkit-scrollbar-button:active,
+.textArea::-webkit-scrollbar-thumb:active,
+.textDisplay::-webkit-scrollbar-button:active,
+.textDisplay::-webkit-scrollbar-thumb:active {
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080;
+} 

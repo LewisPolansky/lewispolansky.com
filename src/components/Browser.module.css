@@ -1,0 +1,541 @@
+.browserContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background-color: #c0c0c0;
+}
+
+.menuBar {
+  display: flex;
+  padding: 2px 0;
+  background-color: #c0c0c0;
+  border-bottom: 1px solid #808080;
+}
+
+.menuItem {
+  font-size: 12px;
+  font-family: 'MS Sans Serif', 'Fixedsys', monospace;
+  color: #000000;
+  padding: 2px 6px;
+  cursor: default;
+  letter-spacing: -0.3px;
+}
+
+.menuItem:hover {
+  background-color: #000080;
+  color: #ffffff;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  background-color: #c0c0c0;
+  border-bottom: 1px solid #808080;
+  gap: 2px;
+}
+
+.favoritesBar {
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  background-color: #d0d0d0;
+  border-bottom: 1px solid #808080;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.favButton {
+  background-color: #c0c0c0;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 11px;
+  padding: 1px 6px;
+  height: 20px;
+  white-space: nowrap;
+  box-shadow: inset -1px -1px #0a0a0a,
+              inset 1px 1px #ffffff,
+              inset -2px -2px #808080,
+              inset 2px 2px #dfdfdf;
+  border: none;
+  cursor: pointer;
+}
+
+.favButton:active {
+  box-shadow: inset -1px -1px #ffffff,
+              inset 1px 1px #0a0a0a,
+              inset -2px -2px #dfdfdf,
+              inset 2px 2px #808080;
+  padding: 2px 5px 0px 7px;
+}
+
+.navButton {
+  background-color: #c0c0c0;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  padding: 2px 6px;
+  min-width: 36px;
+  height: 22px;
+  box-shadow: inset -1px -1px #0a0a0a,
+              inset 1px 1px #ffffff,
+              inset -2px -2px #808080,
+              inset 2px 2px #dfdfdf;
+  border: none;
+  margin: 0 2px;
+  cursor: pointer;
+}
+
+.navButton:active {
+  box-shadow: inset -1px -1px #ffffff,
+              inset 1px 1px #0a0a0a,
+              inset -2px -2px #dfdfdf,
+              inset 2px 2px #808080;
+  padding: 3px 5px 1px 7px;
+}
+
+.navButton:disabled {
+  color: #808080;
+  text-shadow: 1px 1px #ffffff;
+  cursor: default;
+  box-shadow: inset -1px -1px #0a0a0a,
+              inset 1px 1px #ffffff,
+              inset -2px -2px #808080,
+              inset 2px 2px #dfdfdf;
+}
+
+.urlForm {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.addressLabel {
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+.urlBar {
+  flex: 1;
+  height: 22px;
+  padding: 2px 4px;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  border: inset 1px #808080;
+  background-color: #ffffff;
+  margin-right: 4px;
+}
+
+.urlBar:focus {
+  outline: 1px dotted #000000;
+  outline-offset: -4px;
+}
+
+.goButton {
+  background-color: #c0c0c0;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  padding: 2px 8px;
+  height: 22px;
+  box-shadow: inset -1px -1px #0a0a0a,
+              inset 1px 1px #ffffff,
+              inset -2px -2px #808080,
+              inset 2px 2px #dfdfdf;
+  border: none;
+  cursor: pointer;
+}
+
+.goButton:active {
+  box-shadow: inset -1px -1px #ffffff,
+              inset 1px 1px #0a0a0a,
+              inset -2px -2px #dfdfdf,
+              inset 2px 2px #808080;
+  padding: 3px 7px 1px 9px;
+}
+
+.browserContent {
+  flex: 1;
+  overflow: hidden;
+  background-color: #ffffff;
+  border: inset 1px #808080;
+  margin: 4px;
+}
+
+.iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: #ffffff;
+}
+
+.statusBar {
+  height: 20px;
+  border-top: 1px solid #808080;
+  background-color: #c0c0c0;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+}
+
+.statusText {
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 11px;
+  color: #000000;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  gap: 10px;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.loadingText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.loadingUrl {
+  font-weight: bold;
+}
+
+.loadingHourglass {
+  width: 32px;
+  height: 32px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23000' d='M13 4v2h-2v2H9v2H7v2H5v2H3v2h2v2h2v2h2v2h2v2h2v2h10v-2h2v-2h2v-2h2v-2h2v-2h2v-2h-2v-2h-2v-2h-2v-2h-2V8h-2V6h-2V4H13zm2 4h2v2h2v2h2v2h2v2h-2v2h-2v2h-2v2h-2v-2h-2v-2H9v-2H7v-2h2v-2h2v-2h2V8h2z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  animation: hourglassSpin 2s steps(1) infinite;
+}
+
+@keyframes hourglassSpin {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+}
+
+/* Default Start Page Styles */
+.defaultPage {
+  padding: 20px;
+  background-color: #ffffff;
+  height: 100%;
+  overflow: auto;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  scrollbar-width: auto;
+}
+
+/* Add Windows 95-style scrollbar to match ProjectWindow */
+.defaultPage::-webkit-scrollbar,
+.browserContent::-webkit-scrollbar,
+.favoritesBar::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background: #c0c0c0;
+}
+
+.defaultPage::-webkit-scrollbar-thumb,
+.browserContent::-webkit-scrollbar-thumb,
+.favoritesBar::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border: none;
+  box-shadow: inset 1px 1px #ffffff, inset -1px -1px #808080;
+}
+
+.defaultPage::-webkit-scrollbar-button:single-button,
+.browserContent::-webkit-scrollbar-button:single-button,
+.favoritesBar::-webkit-scrollbar-button:single-button {
+  background-color: #c0c0c0;
+  display: block;
+  height: 16px;
+  width: 16px;
+  box-shadow: inset 1px 1px #ffffff, inset -1px -1px #808080;
+}
+
+.defaultPage::-webkit-scrollbar-button:single-button:vertical:decrement,
+.browserContent::-webkit-scrollbar-button:single-button:vertical:decrement,
+.favoritesBar::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4' viewBox='0 0 8 4'><path d='M0 4 L4 0 L8 4 Z' fill='black'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.defaultPage::-webkit-scrollbar-button:single-button:vertical:increment,
+.browserContent::-webkit-scrollbar-button:single-button:vertical:increment,
+.favoritesBar::-webkit-scrollbar-button:single-button:horizontal:increment {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='4' viewBox='0 0 8 4'><path d='M0 0 L4 4 L8 0 Z' fill='black'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.defaultPage::-webkit-scrollbar-track,
+.browserContent::-webkit-scrollbar-track,
+.favoritesBar::-webkit-scrollbar-track {
+  background: #c0c0c0;
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080;
+}
+
+.defaultPage::-webkit-scrollbar-corner,
+.browserContent::-webkit-scrollbar-corner,
+.favoritesBar::-webkit-scrollbar-corner {
+  background: #c0c0c0;
+}
+
+.defaultPage::-webkit-scrollbar-button:active,
+.defaultPage::-webkit-scrollbar-thumb:active,
+.browserContent::-webkit-scrollbar-button:active,
+.browserContent::-webkit-scrollbar-thumb:active,
+.favoritesBar::-webkit-scrollbar-button:active,
+.favoritesBar::-webkit-scrollbar-thumb:active {
+  box-shadow: inset -1px -1px #ffffff, inset 1px 1px #808080;
+}
+
+.defaultPage h1 {
+  font-size: 18px;
+  color: #000080;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.defaultPage p {
+  font-size: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.quickLinks {
+  margin-bottom: 20px;
+  border: 1px solid #808080;
+  padding: 10px;
+  background-color: #f0f0f0;
+}
+
+.quickLinks h2 {
+  font-size: 14px;
+  color: #000080;
+  margin-bottom: 10px;
+}
+
+.quickLinks ul {
+  list-style-type: disc;
+  margin-left: 20px;
+}
+
+.quickLinks li {
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.quickLinks a {
+  color: #0000ff;
+  text-decoration: none;
+}
+
+.quickLinks a:hover {
+  text-decoration: underline;
+}
+
+.searchSection {
+  border: 1px solid #808080;
+  padding: 10px;
+  background-color: #f0f0f0;
+}
+
+.searchSection h2 {
+  font-size: 14px;
+  color: #000080;
+  margin-bottom: 10px;
+}
+
+.searchBox {
+  width: 100%;
+  padding: 3px;
+  margin-bottom: 8px;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  border: inset 1px #808080;
+}
+
+.searchButton {
+  background-color: #c0c0c0;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  padding: 3px 10px;
+  box-shadow: inset -1px -1px #0a0a0a,
+              inset 1px 1px #ffffff,
+              inset -2px -2px #808080,
+              inset 2px 2px #dfdfdf;
+  border: none;
+  cursor: pointer;
+}
+
+.searchButton:active {
+  box-shadow: inset -1px -1px #ffffff,
+              inset 1px 1px #0a0a0a,
+              inset -2px -2px #dfdfdf,
+              inset 2px 2px #808080;
+  padding: 4px 9px 2px 11px;
+}
+
+/* Error Page Styles */
+.errorPage {
+  padding: 20px;
+  background-color: #ffffff;
+  height: 100%;
+  overflow: auto;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.errorPage h1 {
+  font-size: 16px;
+  color: #ff0000;
+  margin-bottom: 10px;
+}
+
+.errorPage p {
+  font-size: 12px;
+  margin-bottom: 10px;
+  text-align: center;
+  max-width: 450px;
+}
+
+.errorActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.errorButton {
+  background-color: #c0c0c0;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  padding: 3px 10px;
+  box-shadow: inset -1px -1px #0a0a0a,
+              inset 1px 1px #ffffff,
+              inset -2px -2px #808080,
+              inset 2px 2px #dfdfdf;
+  border: none;
+  cursor: pointer;
+}
+
+.errorButton:active {
+  box-shadow: inset -1px -1px #ffffff,
+              inset 1px 1px #0a0a0a,
+              inset -2px -2px #dfdfdf,
+              inset 2px 2px #808080;
+  padding: 4px 9px 2px 11px;
+}
+
+/* Dialog Styles */
+.dialogOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.confirmDialog {
+  width: 300px;
+  background-color: #c0c0c0;
+  border-top: 1px solid #dfdfdf;
+  border-left: 1px solid #dfdfdf;
+  border-right: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+.dialogTitleBar {
+  background-color: #000080;
+  padding: 2px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.dialogTitle {
+  margin-left: 2px;
+}
+
+.dialogCloseButton {
+  width: 16px;
+  height: 14px;
+  border: 1px solid #ffffff;
+  background: #c0c0c0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  font-size: 12px;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  padding: 0;
+  padding-bottom: 2px;
+  box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #ffffff;
+  line-height: 1;
+}
+
+.dialogContent {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dialogMessage {
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.dialogButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.dialogButton {
+  background-color: #c0c0c0;
+  font-family: 'MS Sans Serif', Tahoma, sans-serif;
+  font-size: 12px;
+  padding: 3px 15px;
+  min-width: 70px;
+  box-shadow: inset -1px -1px #0a0a0a,
+              inset 1px 1px #ffffff,
+              inset -2px -2px #808080,
+              inset 2px 2px #dfdfdf;
+  border: none;
+  cursor: pointer;
+}
+
+.dialogButton:active {
+  box-shadow: inset -1px -1px #ffffff,
+              inset 1px 1px #0a0a0a,
+              inset -2px -2px #dfdfdf,
+              inset 2px 2px #808080;
+  padding: 4px 14px 2px 16px;
+} 

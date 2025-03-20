@@ -1,6 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './ProjectWindow.module.css';
 import clsx from 'clsx';
+import '@react95/icons/icons.css';
+import {
+  Explore,
+  Computer,
+  Progman1,
+  User,
+  Explorer100,
+  Shell321,
+  Mmsys100,
+  Notepad1,
+  Shell32167,
+  Settings,
+  Mmsys101,
+  Mail,
+  Winmine1, 
+  Wangimg128
+} from '@react95/icons';
 
 interface ProjectWindowProps {
   title: string;
@@ -8,27 +25,30 @@ interface ProjectWindowProps {
   initialPosition?: { x: number; y: number };
   initialSize?: { width?: number; height?: number };
   onClose?: () => void;
-  minimizable?: boolean;
+  onMinimize?: () => void;
   maximizable?: boolean;
   isTerminal?: boolean;
+  scrollable?: boolean;
+  icon?: string;
 }
 
 export const ProjectWindow: React.FC<ProjectWindowProps> = ({
   title,
   children,
-  initialPosition = { x: 50, y: 50 },
-  initialSize = { width: 350, height: 275 },
+  initialPosition = { x: 0, y: 0 },
+  initialSize = { width: 300, height: 300 },
   onClose,
-  // minimizable = true,
-  maximizable = true,
+  onMinimize,
+  maximizable = false,
   isTerminal = false,
+  scrollable = false,
+  icon = 'folder',
 }) => {
   const [position, setPosition] = useState(initialPosition);
   const [size, setSize] = useState(initialSize);
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
-  // const [isMinimized, setIsMinimized] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [prevSize, setPrevSize] = useState(initialSize);
   const [prevPosition, setPrevPosition] = useState(initialPosition);
@@ -111,17 +131,43 @@ export const ProjectWindow: React.FC<ProjectWindowProps> = ({
     }
   };
 
-  // Minimize functionality to be implemented
-  // const handleMinimize = () => {
-  //   setIsMinimized(!isMinimized);
-  // };
+  // Icon component using @react95/icons
+  const getIcon = () => {
+    switch (icon?.toLowerCase()) {
+      case 'folder':
+        return <Explore className={styles.windowTitleIcon} />;
+      case 'computer':
+        return <Computer className={styles.windowTitleIcon} />;
+      case 'user':
+        return <User className={styles.windowTitleIcon} />;
+      case 'browser':
+        return <Shell32167 className={styles.windowTitleIcon} />;
+      case 'shell32_1':
+        return <Shell321 className={styles.windowTitleIcon} />;
+      case 'race':
+        return <Wangimg128 className={styles.windowTitleIcon} />;
+      case 'dropola':
+        return <Winmine1 className={styles.windowTitleIcon} />;
+      case 'html_page':
+        return <Notepad1 className={styles.windowTitleIcon} />;
+      case 'shell32_5':
+        return <Explorer100 className={styles.windowTitleIcon} />;
+      case 'mmsys_115':
+        return <Settings className={styles.windowTitleIcon} />;
+      case 'flying_through_space_100':
+        return <Mmsys101 className={styles.windowTitleIcon} />;
+      case 'ie':
+        return <Mail className={styles.windowTitleIcon} />;
+      default:
+        return <Progman1 className={styles.windowTitleIcon} />;
+    }
+  };
 
   return (
     <div 
       className={clsx(
         styles.window,
         isMaximized && styles.maximized,
-        // isMinimized && styles.minimized,
         isFocused ? styles.focused : styles.unfocused
       )}
       style={{ 
@@ -137,16 +183,11 @@ export const ProjectWindow: React.FC<ProjectWindowProps> = ({
         isTerminal && styles.terminalTitleBar,
         isFocused ? styles.focused : styles.unfocused
       )} onMouseDown={handleMouseDown}>
-        <div className={styles.titleText}>{title}</div>
+        <div className={styles.titleText}>
+          {getIcon()}
+          {title}
+        </div>
         <div className={styles.windowControls}>
-          {/* {minimizable && (
-            <button 
-              className={clsx(styles.controlButton, styles.minimizeButton)} 
-              onClick={handleMinimize}
-            >
-              _
-            </button>
-          )} */}
           {maximizable && (
             <button className={styles.controlButton} onClick={handleMaximize}>
               □
