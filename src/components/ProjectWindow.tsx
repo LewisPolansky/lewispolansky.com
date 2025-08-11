@@ -9,7 +9,6 @@ import {
   User,
   Explorer100,
   Shell321,
-  Mmsys100,
   Notepad1,
   Shell32167,
   Settings,
@@ -25,10 +24,8 @@ interface ProjectWindowProps {
   initialPosition?: { x: number; y: number };
   initialSize?: { width?: number; height?: number };
   onClose?: () => void;
-  onMinimize?: () => void;
   maximizable?: boolean;
   isTerminal?: boolean;
-  scrollable?: boolean;
   icon?: string;
 }
 
@@ -38,10 +35,8 @@ export const ProjectWindow: React.FC<ProjectWindowProps> = ({
   initialPosition = { x: 0, y: 0 },
   initialSize = { width: 300, height: 300 },
   onClose,
-  onMinimize,
   maximizable = false,
   isTerminal = false,
-  scrollable = false,
   icon = 'folder',
 }) => {
   const [position, setPosition] = useState(initialPosition);

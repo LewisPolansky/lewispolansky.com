@@ -397,11 +397,11 @@ export function Profile() {
           >
             <div className={styles.projectWindowContent}>
               <img src={captainlogo} alt="Captain AI Logo" className={styles.projectLogo} />
-              <h1>An AI Copilot for CFOs</h1>
+              <h1>AI for Big Data</h1>
               <p>
-                <a href="https://v0-captain-mu.vercel.app/" target="_blank" rel="noopener noreferrer">Captain</a> is an AI copilot for CFOs. It helps you understand your data and make better decisions.
+                <a href="https://runcaptain.com/" target="_blank" rel="noopener noreferrer">Captain</a> is a tool for analyzing large datasets with LLMs. It's a scalable alternative to RAG that leverages swarms of agents to answer questions over many siloed data sources. 
               </p>
-              <button onClick={() => window.open('https://v0-captain-mu.vercel.app/', '_blank')}>Learn More</button>
+              <button onClick={() => window.open('https://runcaptain.com/', '_blank')}>Learn More</button>
             </div>
           </ProjectWindow>
 
@@ -448,7 +448,7 @@ export function Profile() {
                 <p>
                   Hey there, I'm Lewis!
                 </p>
-                <h2>I'm a Software Engineer 💻 studying Finance 📈 at Purdue University 🚂</h2>
+                <h2>A Full-Stack Software Engineer studying Finance at Purdue University 🚂</h2>
 
                 <p>I'm passionate about leveraging software to <strong>create ridiculously useful products</strong>.</p>
 
@@ -466,36 +466,37 @@ export function Profile() {
                 <ul>
                   <li>Advanced FinTech and Financial Engineering at Purdue Daniels School of Business</li>
                   <li>Accuracy & Verification Algorithms for more reliable LLMs</li>
-                  <li>Rapid-Growth Operations for Startups</li>
+                  <li>Automating RAG-like pipelines for Big Data</li>
                 </ul>
 
-                <h3>My SaaS Stack</h3>
+                <h3>My Go-To SaaS Stack:</h3>
                 <div className={styles.techStack}>
                   <span className={styles.techBadge}>React</span>
                   <span className={styles.techBadge}>Next.js</span>
                   <span className={styles.techBadge}>TypeScript</span>
-                  <span className={styles.techBadge}>CSS3</span>
+                  <span className={styles.techBadge}>Tailwind</span>
                   <span className={styles.techBadge}>Three.js</span>
                   <span className={styles.techBadge}>Node.js</span>
                   <span className={styles.techBadge}>Express.js</span>
-                  <span className={styles.techBadge}>Supabase</span>
+                  <span className={styles.techBadge}>Vercel</span>
                   <span className={styles.techBadge}>Google Cloud</span>
                   <span className={styles.techBadge}>Stripe</span>
                   <span className={styles.techBadge}>Figma</span>
                   <span className={styles.techBadge}>Vite</span>
-                  <span className={styles.techBadge}>VS Code</span>
-                  <span className={styles.techBadge}>GitHub Copilot</span>
+                  <span className={styles.techBadge}>Cursor</span>
+                  <span className={styles.techBadge}>Claude Code</span>
                   <span className={styles.techBadge}>Cloudflare</span>
                 </div>
 
-                <h3>I also know</h3>
+                <h3>Prev. worked with:</h3>
                 <div className={styles.techStack}>
                   <span className={styles.techBadge}>Firebase</span>
-                  <span className={styles.techBadge}>React</span>
+                  <span className={styles.techBadge}>Supabase</span>
                   <span className={styles.techBadge}>React Native</span>
                   <span className={styles.techBadge}>Flutter</span>
                   <span className={styles.techBadge}>Dart</span>
-                  <span className={styles.techBadge}>SQL</span>
+                  <span className={styles.techBadge}>PostgreSQL</span>
+                  <span className={styles.techBadge}>Prisma ORM</span>
                   <span className={styles.techBadge}>C++</span>
                   <span className={styles.techBadge}>C</span>
                   <span className={styles.techBadge}>C#</span>
@@ -506,8 +507,9 @@ export function Profile() {
                   <span className={styles.techBadge}>Linux</span>
                   <span className={styles.techBadge}>Kali</span>
                   <span className={styles.techBadge}>Vim</span>
+                  <span className={styles.techBadge}>Et cetera</span>
+
                 </div>
-                <p className={styles.footnote}>and almost anything else if you give me a few weeks 🫡</p>
 
                 <h3>Awards & Achievements</h3>
                 <div className={styles.awards}>
@@ -527,6 +529,10 @@ export function Profile() {
 
                 <h3>Relevant Experience</h3>
                 <div className={styles.experience}>
+                  <div className={styles.role}>
+                    <h4>CEO and Co-Founder, Captain</h4>
+                    <p>Building the future of LLMs + Big Data. Learn more <a href="https://runcaptain.com/" target="_blank" rel="noopener noreferrer">here</a>.</p>
+                  </div>
                   <div className={styles.role}>
                     <h4>Head of Business Development, Purdue IEEE</h4>
                     <p>Purdue's 125 year old Student Branch of the largest technical professional society in the world</p>

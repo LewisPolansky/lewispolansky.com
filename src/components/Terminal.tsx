@@ -66,12 +66,13 @@ Available commands:
   download - Download a file to your PC (usage: download filename)
   run   - Run a program (usage: run program.exe)
          - Try "run constellation.exe" to open a new browser window!
-         - Try "run race.exe" to test your typing speed!
          - Try "run starbox.exe" to play the Starbox puzzle!
          - Try "run dropola.exe" to play Dropola!
   ps    - List running processes
   kill  - Close a running process (usage: kill process_name)
 `;
+
+// - Try "run race.exe" to test your typing speed!
 
 export const Terminal: React.FC<TerminalProps> = ({
   title = 'LewOS Terminal',

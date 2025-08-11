@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ProjectWindow } from './ProjectWindow';
 import { Starbox } from './Starbox';
 import styles from './Browser.module.css';

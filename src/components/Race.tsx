@@ -76,7 +76,6 @@ export const Race: React.FC<RaceProps> = ({
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const [currentWpm, setCurrentWpm] = useState(0);
-  const [sampleIndex, setSampleIndex] = useState(0);
   const [stats, setStats] = useState<RaceStats>({
     bestWpm: 0,
     totalRaces: 0,
@@ -159,7 +158,6 @@ export const Race: React.FC<RaceProps> = ({
   const startRace = () => {
     // Get a random sample
     const randomIndex = Math.floor(Math.random() * typingSamples.length);
-    setSampleIndex(randomIndex);
     setCurrentText(typingSamples[randomIndex].text);
     setUserInput('');
     setStartTime(Date.now());
