@@ -27,6 +27,7 @@ interface ProjectWindowProps {
   maximizable?: boolean;
   isTerminal?: boolean;
   icon?: string;
+  iconSrc?: string;
 }
 
 export const ProjectWindow: React.FC<ProjectWindowProps> = ({
@@ -38,6 +39,7 @@ export const ProjectWindow: React.FC<ProjectWindowProps> = ({
   maximizable = false,
   isTerminal = false,
   icon = 'folder',
+  iconSrc,
 }) => {
   const [position, setPosition] = useState(initialPosition);
   const [size, setSize] = useState(initialSize);
@@ -47,7 +49,7 @@ export const ProjectWindow: React.FC<ProjectWindowProps> = ({
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [prevSize, setPrevSize] = useState(initialSize);
   const [prevPosition, setPrevPosition] = useState(initialPosition);
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(isTerminal);
   
   const windowRef = useRef<HTMLDivElement>(null);
 
@@ -128,6 +130,9 @@ export const ProjectWindow: React.FC<ProjectWindowProps> = ({
 
   // Icon component using @react95/icons
   const getIcon = () => {
+    if (iconSrc) {
+      return <img src={iconSrc} alt="" className={styles.windowTitleIcon} style={{ width: 14, height: 14 }} />;
+    }
     switch (icon?.toLowerCase()) {
       case 'folder':
         return <Explore className={styles.windowTitleIcon} />;

@@ -13,7 +13,8 @@ import React from 'react'
 type CharacterStyle = 'regular' | 'italic' | 'underline' | 'bold' | 'done'
 
 import aicodefaillogo from '../assets/aicodefaillogo.png'
-import captainlogo from '../assets/captainlogo.png'
+import captainlogo from '../assets/captain-wordmark.png'
+import captainfavicon from '../assets/captain-favicon.png'
 import cyberspacelogo from '../assets/cyberspacelogo.png'
 import lewispolanskylogo from '../assets/logo.png'
 import { Footer } from '../components/Footer'
@@ -334,16 +335,6 @@ export function Profile() {
       )}
       {displayProjects && (
         <div id="windows-container">
-          <Terminal
-            title="LewOS Terminal"
-            initialPosition={{ x: 17, y: 467 }}
-            initialSize={{ width: 600, height: 400 }}
-            onRunCommand={handleRunCommand}
-            onKillProcess={handleKillProcess}
-            systemMessage={terminalMessage}
-            activeProcesses={activeProcesses}
-          />
-
           {/* Render all browser instances */}
           {browsers.map(browser => (
             <Browser
@@ -391,36 +382,6 @@ export function Profile() {
           ))}
 
           <ProjectWindow
-            title="CaptainAI.exe"
-            initialPosition={{ x: window.innerWidth - 108 - 350, y: 14 }}
-            icon="regedit_100"
-          >
-            <div className={styles.projectWindowContent}>
-              <img src={captainlogo} alt="Captain AI Logo" className={styles.projectLogo} />
-              <h1>AI for Big Data</h1>
-              <p>
-                <a href="https://runcaptain.com/" target="_blank" rel="noopener noreferrer">Captain</a> is a tool for analyzing large datasets with LLMs. It's a scalable alternative to RAG that leverages swarms of agents to answer questions over many siloed data sources. 
-              </p>
-              <button onClick={() => window.open('https://runcaptain.com/', '_blank')}>Learn More</button>
-            </div>
-          </ProjectWindow>
-
-          <ProjectWindow
-            title="AiCodeChecker.exe"
-            initialPosition={{ x: window.innerWidth - 17 - 350, y: 280 }}
-            icon="computer_2"
-          >
-            <div className={styles.projectWindowContent}>
-              <img src={aicodefaillogo} alt="AI Code Fail Logo" className={styles.projectLogo} />
-              <h1>Checkmate ChatGPT</h1>
-              <p>
-                <a href="https://aicode.fail" target="_blank" rel="noopener noreferrer">AiCode.fail</a> checks code for errors. You can now verify AI-generated code rapidly.
-              </p>
-              <button onClick={() => window.open('https://aicode.fail', '_blank')}>Learn More</button>
-            </div>
-          </ProjectWindow>
-
-          <ProjectWindow
             title="CyberSpace.exe"
             initialPosition={{ x: window.innerWidth - 130 - 350, y: 532 }}
             icon="network_2"
@@ -448,7 +409,7 @@ export function Profile() {
                 <p>
                   Hey there, I'm Lewis!
                 </p>
-                <h2>A Full-Stack Software Engineer studying Finance at Purdue University 🚂</h2>
+                <h2>CEO @ Captain, Prev. IEEE, Founded CyberSpace (CTF hacking group), Recognized by the U.S. Congress for leadership in community software projects, Avid designer, Dropped out of Purdue</h2>
 
                 <p>I'm passionate about leveraging software to <strong>create ridiculously useful products</strong>.</p>
 
@@ -461,13 +422,6 @@ export function Profile() {
                     Check out my <b>GitHub</b>
                   </button>
                 </p>
-
-                <h3>Currently studying</h3>
-                <ul>
-                  <li>Advanced FinTech and Financial Engineering at Purdue Daniels School of Business</li>
-                  <li>Accuracy & Verification Algorithms for more reliable LLMs</li>
-                  <li>Automating RAG-like pipelines for Big Data</li>
-                </ul>
 
                 <h3>My Go-To SaaS Stack:</h3>
                 <div className={styles.techStack}>
@@ -549,6 +503,47 @@ export function Profile() {
               </div>
             </div>
           </ProjectWindow>
+
+          <ProjectWindow
+            title="Captain.exe"
+            initialPosition={{ x: window.innerWidth - 108 - 450, y: 14 }}
+            initialSize={{ width: 480, height: 357 }}
+            iconSrc={captainfavicon}
+          >
+            <div className={styles.projectWindowContent}>
+              <img src={captainlogo} alt="Captain AI Logo" className={styles.projectLogo} style={{ background: 'white', padding: '8px', borderRadius: '4px' }} />
+              <h1>Snowflake for Unstructured Data</h1>
+              <p>
+                <a href="https://runcaptain.com/" target="_blank" rel="noopener noreferrer">Captain</a> (YC W26) provides a straightforward API for AI agents to accurately search through files (Avg: 78% → 95% + citations). We'll index unstructured data from the sources you already use like S3, SharePoint, and Google Drive, and easily scale to multi-modal, petabyte-size datasets. We're the Snowflake for Unstructured Data.
+              </p>
+              <button onClick={() => window.open('https://runcaptain.com/', '_blank')}>Learn More</button>
+            </div>
+          </ProjectWindow>
+
+          <ProjectWindow
+            title="AiCodeChecker.exe"
+            initialPosition={{ x: window.innerWidth - 17 - 350, y: 280 }}
+            icon="computer_2"
+          >
+            <div className={styles.projectWindowContent}>
+              <img src={aicodefaillogo} alt="AI Code Fail Logo" className={styles.projectLogo} />
+              <h1>Checkmate ChatGPT</h1>
+              <p>
+                <a href="https://aicode.fail" target="_blank" rel="noopener noreferrer">AiCode.fail</a> checks code for errors. You can now verify AI-generated code rapidly.
+              </p>
+              <button onClick={() => window.open('https://aicode.fail', '_blank')}>Learn More</button>
+            </div>
+          </ProjectWindow>
+
+          <Terminal
+            title="LewOS Terminal"
+            initialPosition={{ x: 17, y: 467 }}
+            initialSize={{ width: 600, height: 400 }}
+            onRunCommand={handleRunCommand}
+            onKillProcess={handleKillProcess}
+            systemMessage={terminalMessage}
+            activeProcesses={activeProcesses}
+          />
 
           <Footer />
         </div>
